@@ -1,0 +1,248 @@
+/*Fix modal size*/
+.modal-dialog {
+  position: relative;
+  width: auto;
+  max-width: 600px;
+  margin: 10px;
+}
+.modal-sm {
+  max-width: 300px;
+}
+.modal-lg {
+  max-width: 900px;
+}
+@media (min-width: 768px) {
+  .modal-dialog {
+    margin: 30px auto;
+    left: auto;
+  }
+}
+@media (min-width: 320px) {
+  .modal-sm {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+@media (min-width: 620px) {
+  .modal-dialog {
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .modal-lg {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+}
+@media (min-width: 920px) {
+  .modal-lg {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+/*END fix modal size*/
+.clear_both {
+	clear: both;
+}
+.max_height_100_percent{
+	max-height: 100% !important;
+}
+#errmsg{
+	color: red;
+}
+.margin_bottom_10px{
+	margin-bottom: 10px;
+}
+/*fix android select html*/
+select{
+height: 34px;
+border: 1px solid #ccc;
+  width:100%;
+  -webkit-appearance: listbox;
+  background-image: url(data:image/png;base64,R0lGODlhDQAEAIAAAAAAAP8A/yH5BAEHAAEALAAAAAANAAQAAAILhA+hG5jMDpxvhgIAOw==) !important; 
+  background-repeat: no-repeat;
+  background-position: right center;
+  padding-right: 20px;
+  padding-left: 5px;
+}
+/*fix input type file html*/
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+td{
+	vertical-align: inherit !important;
+}
+.table_thumbnail_image{
+	width: 80px;
+	height: 80px;
+	}
+.center{
+	text-align: center;
+	}
+.float_none_div div.btn-group{
+	float: none !important;
+	}
+.padding_20px{
+	padding: 20px;
+}
+.text_align_right{
+	text-align: right;
+	}
+/*kiá»ƒm kho*/
+.chatlieu_group_popup a, .hanghoa_group_popup a{
+	margin: 5px;
+	box-sizing: border-box;
+	}
+.clear_both{
+	clear: both;
+	}
+/*trang chá»§*/
+.navbar-brand{
+	cursor: pointer;
+}
+.bs-glyphicons {
+	margin-right: 0;
+	margin-left: 0;
+	margin: 0 -10px 20px;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+.bs-glyphicons-list {
+	padding-left: 0;
+	list-style: none;
+	list-style-type: none;
+}
+.bs-glyphicons li {
+	font-size: 12px;
+}
+.bs-glyphicons li:hover {
+	color: #fff;
+	background-color: #563d7c;
+}
+.bs-glyphicons li {
+	float: left;
+	height: 115px;
+	padding: 0px;
+	line-height: 1.4;
+	text-align: center;
+	background-color: #f9f9f9;
+	border: 1px solid #fff;
+}
+.bs-glyphicons-list li a{
+	padding: 10px;
+	color: #000;
+	text-decoration: none;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	float: left;
+	font-size: 16px;
+	cursor: pointer;
+}
+.bs-glyphicons-list li a:hover{
+	text-decoration: none;
+	color:#fff;
+}
+.bs-glyphicons .glyphicon {
+	margin-top: 5px;
+	margin-bottom: 10px;
+	font-size: 24px;
+}
+.glyphicon {
+	position: relative;
+	top: 1px;
+	display: inline-block;
+	font-family: 'Glyphicons Halflings';
+	font-style: normal;
+	font-weight: 400;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.bs-glyphicons .glyphicon-class {
+	display: block;
+	text-align: center;
+	word-wrap: break-word;
+}
+/*nháº­p liá»‡u*/
+.margin_top_4px{
+	margin-top: 4px !important;
+}
+
+.loading-panel {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: none;
+	z-index: 2000;
+	background-color: black;
+	background-image: url('../img/loading-icon.gif');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: center center;
+	opacity: 0.4;
+	filter: alpha(opacity = 40); /* For IE8 and earlier */
+}
+
+.btn_edit_delete{
+	margin-right: 5px;
+	margin-bottom: 5px;
+	width: 45px;
+}
+
+.input-group-addon{
+	cursor: pointer;
+}
+
+#insert_order_modal .modal-body{
+	max-height: 300px;
+	overflow: auto;
+}
+
+.modal {
+	overflow-y: auto;
+}
+
+body.modal-open, .modal-open .navbar-fixed-top, .modal-open .navbar-fixed-bottom{
+	margin-right: 0px;
+}
+
+/* .modal-dialog {
+	width: 600px;
+	margin: 30px auto;
+	padding: 10px;
+} */
+
+.btn_detail{
+	margin-left: 10px;
+	padding: 2px 5px;
+}
+.btn_detail .fa-lg{
+	line-height: 1em;
+}
+#kiemkho_modal .modal-body dl {
+	font-size: 20px;
+}
+#kiemkho_modal .modal-body dl đt {
+	clear: both;
+}
+#kiemkho_modal .modal-body {
+    float: left;
+}

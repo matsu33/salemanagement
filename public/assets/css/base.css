@@ -1,0 +1,152 @@
+thead
+{
+	background: linear-gradient(#fbfbfb, #f2f2f2);
+	color: #20b2aa;
+}
+
+thead tr th, td
+{
+	vertical-align: middle !important;
+}
+
+table a
+{
+	text-decoration: none;
+	font-weight: bold;	
+}
+
+table a:link hover{
+	text-decoration: none;
+}
+
+.text-highlight
+{
+	font-weight: bold;	
+	color: #428bca;
+}
+
+.center
+{
+	text-align: center !important;
+}
+
+.left
+{
+	text-align: left !important;
+}
+
+.price-button
+{
+	margin-right: 5px;
+}
+
+.delete-button
+{
+	margin-left: 5px;
+}
+
+.search-box
+{
+	padding-left: 0px !important;
+}
+
+.checkbox-service
+{
+	width: 20px;
+	height: 20px;
+	margin-top: 7px !important;
+}
+
+.textarea-no-resize {
+    resize: none;
+}
+
+.search-group
+{
+	border: 1px solid #eee;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	overflow: hidden;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.search-group.right-group
+{
+	float: right;
+}
+
+.search-group .title
+{
+	background: #f2f2f2;
+	color: #20b2aa;
+	padding: 0px !important;
+	font-size: 14pt;
+	padding: 5px 0px !important;
+}
+
+.checkbox-price-import
+{
+	margin-bottom: 5px !important;
+	margin-top: 17px;
+}
+
+.no-pad-left
+{
+	padding-left: 0px;
+}
+
+.no-pad-right
+{
+	padding-right: 0px;
+}
+
+.float-right
+{
+	float: right;
+}
+
+.btnSearchPrice
+{
+	height: 75px;
+}
+
+.hidden
+{
+	display: none !important;
+}
+
+.checkbox-keep
+{
+	width: 20px;
+	height: 20px;
+	margin-top: 7px !important;
+}
+
+
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc,
+table.dataTable thead .sorting_asc_disabled,
+table.dataTable thead .sorting_desc_disabled {
+    background: 0 0;
+}
+
+table.dataTable thead .sorting_asc:after {
+    content: "\f0de";
+    float: right;
+    font-family: fontawesome;
+}
+
+table.dataTable thead .sorting_desc:after {
+    content: "\f0dd";
+    float: right;
+    font-family: fontawesome;
+}
+
+table.dataTable thead .sorting:after {
+    content: "\f0dc";
+    float: right;
+    font-family: fontawesome;
+    color: rgba(50,50,50,.5);
+}

@@ -1,0 +1,91 @@
+.lstCompany
+{
+	border-collapse: collapse;
+	border: 1px solid #ddd;
+}
+
+.lstCompany thead
+{
+	background: linear-gradient(#fbfbfb, #f2f2f2);
+	color: #20b2aa;	
+}
+
+.lstCompany .bold
+{
+	font-weight: bold;
+}
+
+.lstCompany a
+{
+	text-decoration: none;
+	font-weight: bold;	
+}
+
+.lstCompany a:hover
+{
+	color: #e78f5e;
+	text-decoration: none;
+}
+
+.lstCompany .delete-button
+{
+	margin-left: 10px;
+}
+
+label
+{
+	font-weight: normal;
+	padding: 0px 5px 0px 0px !important;
+}
+
+.company-logo-group
+{
+	line-height: 64px;
+}
+
+.company-logo-group img
+{
+	margin-left: 15px;
+	float: left;
+	border: 1px solid #c0d6e4;
+}
+
+.company-logo-group .upload-logo
+{
+	margin: 10px 0px 10px 0px;
+	line-height: 20px;
+}
+
+.form-group
+{
+	margin-bottom: 10px;	
+}
+
+.company-logo-group p
+{
+	line-height: 1;
+	font-size: 11px;
+	color: #99abb6;
+}
+
+.company-modal-header
+{
+	padding: 8px;
+}
+
+.company-modal-body
+{
+	padding: 10px 20px !important;
+}
+
+.company-modal-footer
+{
+	padding: 10px 20px !important;
+	margin-top: 0px !important; 
+}
+
+.company-button-funtion
+{
+	float: right;
+	padding: 10px 0px 10px 0px;
+}
