@@ -44,7 +44,10 @@
 	</div>
 	
 		<?php echo render('bangbaogia/_form'); ?>
-	
+
+        <input type="hidden" value="<?php echo $publisher_id; ?>" class="selected-publisher">
+        <input type="hidden" value="<?php echo $category_id; ?>" class="selected-category">
+        <input type="hidden" value="<?php echo $material_id; ?>" class="selected-material">
 	<div class="row">
 		<div class="col-md-12">
 			<hr>

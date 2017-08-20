@@ -1,19 +1,41 @@
 <?php echo Form::open(array("class"=>"", 'id' => 'frm_product_price_add')); ?>
+
 <div class="row">
 	
 <div class="col-sm-12">
 	
 		<div class="form-group col-sm-6">
-			<label class="col-xs-12 control-label">Nhà cung cấp</label> 
-			<select class="form-control select_publisher"></select>
+			<label class="col-xs-12 control-label">Nhà cung cấp</label>
+            <div class="input-group">
+                <select class="form-control select_publisher"></select>
+
+                <span class="input-group-addon">
+					<input type="checkbox" class="js-checkbox-select-search-publisher">
+				</span>
+            </div>
 		</div>
 		<div class="form-group col-sm-6">
 			<label class="control-label col-xs-12">Hàng
-				hóa</label> <select class="form-control select_category"></select>
+				hóa</label>
+            <div class="input-group">
+                <select class="form-control select_category"></select>
+
+                <span class="input-group-addon">
+					<input type="checkbox" class="js-checkbox-select-search-category">
+				</span>
+            </div>
+
 		</div>
 		<div class="form-group col-sm-6" >
 			<label class="control-label col-xs-12">Chất
-				liệu</label> <select class="form-control select_material"></select>
+				liệu</label>
+            <div class="input-group">
+                <select class="form-control select_material"></select>
+
+                <span class="input-group-addon">
+					<input type="checkbox" class="js-checkbox-select-search-material">
+				</span>
+            </div>
 		</div>
 		<div class="form-group col-md-2 col-sm-2">
 			<label class="control-label" >Đường kính</label>
@@ -65,10 +87,15 @@
 			</button>
 			 -->
 			 <button type="submit"
-				class="btn btn-default col-md-2 col-md-push-5 col-sm-3 col-sm-push-3 col-xs-12 margin_bottom_10px">
+				class="btn btn-default col-md-2 col-md-push-2 col-sm-3 col-sm-push-1 col-xs-12 margin_bottom_10px" onclick="searchPrice();">
 				<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;&nbsp;Tìm
 				kiếm
 			</button>
+            <!--<button type="submit"
+                    class="btn btn-default col-md-2 col-md-push-3 col-sm-3 col-sm-push-1 col-xs-12 margin_bottom_10px" onclick="searchProduct()">
+                <span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;&nbsp;Tìm
+                kiếm HH
+            </button>-->
 		</div>
 	</div>
 <?php echo Form::close(); ?>

@@ -201,6 +201,13 @@ function fillMaterialToSelectElement(element){
 				option = '<option value="'+no+'">'+category_name+'</option>';
 				$(element).append(option);
 			});
+            var selectedMaterial = $('.selected-material').val();
+            if(selectedMaterial){
+                $('.select_material').val(selectedMaterial);
+                $(".js-checkbox-select-search-material").prop("checked", true);
+            }else{
+                $(".js-checkbox-select-search-material").prop("checked", false);
+            }
 		} else {
 			Omss.showError(data.message);
 		}
@@ -223,6 +230,13 @@ function fillCategoryToSelectElement(element){
 				option = '<option value="'+no+'">'+category_name+'</option>';
 				$(element).append(option);
 			});
+			var selectedCategory = $('.selected-category').val();
+			if(selectedCategory){
+				$('.select_category').val(selectedCategory);
+                $(".js-checkbox-select-search-category").prop("checked", true);
+            }else{
+                $(".js-checkbox-select-search-category").prop("checked", false);
+            }
 		} else {
 			Omss.showError(data.message);
 		}
@@ -245,6 +259,13 @@ function fillPublisherToSelectElement(element){
 				option = '<option value="'+no+'">'+publisher_name+'</option>';
 				$(element).append(option);
 			});
+            var selectedPublisher = $('.selected-publisher').val();
+            if(selectedPublisher){
+                $('.select_publisher').val(selectedPublisher);
+                $(".js-checkbox-select-search-publisher").prop("checked", true);
+            }else{
+                $(".js-checkbox-select-search-publisher").prop("checked", false);
+			}
 		} else {
 			Omss.showError(data.message);
 		}
