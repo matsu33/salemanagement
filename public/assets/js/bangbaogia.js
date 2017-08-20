@@ -686,3 +686,49 @@ function updateProduct(){
 	});
 }
 
+// function searchPublisher(){
+//     var selectedPublisher = parseInt($("#frm_product_price_add .select_publisher" ).val());
+//     window.location = "?publisher_id="+selectedPublisher+'&page=1';return;
+// 	console.log('selectedPublisher : ' + selectedPublisher);
+//     var data = {
+//         publisher_id: selectedPublisher
+//     };
+//     post_to_url('',data,null);
+// }
+//
+// function searchProduct(){
+//     var selectedCategory = parseInt($("#frm_product_price_add .select_category" ).val());
+//     window.location = "?category_id="+selectedCategory+'&page=1';return;
+//     console.log('selected category : ' + selectedCategory);
+//     var data = {
+//         category_id: selectedCategory
+//     };
+//     post_to_url('',data,null);
+// }
+
+function searchPrice(){
+	var isCheckPublisher = $('.js-checkbox-select-search-publisher').is( ":checked" );
+    var isCheckCategory = $('.js-checkbox-select-search-category').is( ":checked" );
+    var isCheckMaterial = $('.js-checkbox-select-search-material').is( ":checked" );
+
+    var searchPublisherQuery = '';
+    var searchCategoryQuery = '';
+    var searchMaterialQuery = '';
+    var searchPageQuery = '';
+
+    if(isCheckPublisher){
+        searchPublisherQuery = '&publisher_id=' + parseInt($("#frm_product_price_add .select_publisher" ).val());
+	}
+
+    if(isCheckCategory){
+        searchCategoryQuery = '&category_id=' + parseInt($("#frm_product_price_add .select_category" ).val());
+    }
+
+    if(isCheckMaterial){
+        searchMaterialQuery = '&material_id=' + parseInt($("#frm_product_price_add .select_material" ).val());
+    }
+
+    window.location = '?page=1' + searchPublisherQuery + searchCategoryQuery + searchMaterialQuery;
+
+    return false;
+}

@@ -24,12 +24,20 @@ class Controller_Bangbaogia extends Controller_Base
 	public function action_index()
 	{
 		// get search parameter
-		$search_keyword = Input::param ( 'keyword' ) ? Input::param ( 'keyword' ) : '';
-		
+//		$search_keyword = Input::param ( 'keyword' ) ? Input::param ( 'keyword' ) : '';
+        $search_publisher = Input::param ( 'publisher_id' ) ? Input::param ( 'publisher_id' ) : '';
+        $search_category = Input::param ( 'category_id' ) ? Input::param ( 'category_id' ) : '';
+        $search_material = Input::param ( 'material_id' ) ? Input::param ( 'material_id' ) : '';
+
+        $page = Input::param ( 'page' ) ? Input::param ( 'page' ) : 1;
+
+        $publisherSearchUrl = $search_publisher == '' ? '' : '&publisher_id='.$search_publisher;
+        $categorySearchUrl = $search_category == '' ? '' : '&category_id='.$search_category;
+        $materialSearchUrl = $search_material == '' ? '' : '&material_id='.$search_material;
 		// pagination config
 		$config = array (
 				// 'pagination_url' => '/manage/company',
-				'pagination_url' => '/bangbaogia/index?keyword=' . $search_keyword,
+				'pagination_url' => '/bangbaogia/index?'.$publisherSearchUrl.$categorySearchUrl,
 				'total_items' => 0,
 				'per_page' => PRODUCT_PER_PAGE,
 				'uri_segment' => 'page',
@@ -48,7 +56,7 @@ class Controller_Bangbaogia extends Controller_Base
 		 $total_items = $query_count->execute ()->current () ['count'];
 		 */
 		
-		$total_items = Model_Price::count();
+//		$total_items = Model_Price::count();
 		
 		//////////////////////////
 		//init sql
@@ -85,26 +93,45 @@ class Controller_Bangbaogia extends Controller_Base
 				->on('products.unit_id', '=', 'units.id');
 				//->order_by('id','DESC');
 				//$data = $querySelect->execute()->as_array();
-		
-		
-				///////////////////////
-				// set list search
-				
-		
-				// set total items of pagination
-				$pagination->total_items = $total_items;
-		
-				// we pass the object, it will be rendered when echo'd in the view
-				$data ['pagination'] = $pagination->render ();
-		
-				$data ['keyword'] = $search_keyword;
-				
-				$data ['list_price'] = $query_select->order_by ( 'prices.create_at', 'desc' )->limit ( $pagination->per_page )->offset ( $pagination->offset )->execute ()->as_array ();
-				
-				//var_dump($pagination->offset);
-				//var_dump($data);exit;
-				$this->template->title = Lang::get('title_price_list');
-				$this->template->content = View::forge ( 'bangbaogia/index', $data );
+        if($search_publisher != ''){
+            $query_select->where('publisher_id', $search_publisher);
+        }
+        if($search_category != ''){
+            $query_select->where('category_id', $search_category);
+        }
+        if($search_material != ''){
+            $query_select->where('material_id', $search_material);
+        }
+        $countTotalList = $query_select->order_by ( 'prices.create_at', 'desc' )->execute ()->as_array ();
+        ///////////////////////
+        // set list search
+        $paginationOffset = $page * PRODUCT_PER_PAGE - PRODUCT_PER_PAGE;
+        $data ['list_price'] = $query_select->order_by ( 'prices.create_at', 'desc' )->limit ( $pagination->per_page )->offset ( $paginationOffset )->execute ()->as_array ();
+
+//        var_dump('<pre>');
+//        var_dump(DB::last_query());
+//        var_dump('</pre>');
+
+        $total_items = count($countTotalList);
+        // set total items of pagination
+        $pagination->total_items = $total_items;
+
+//        var_dump('total_items : <pre>');
+//        var_dump($data ['list_price']);
+//        var_dump('</pre>');
+
+        // we pass the object, it will be rendered when echo'd in the view
+        $data ['pagination'] = $pagination->render ();
+
+//        $data ['keyword'] = $search_keyword;
+        $data ['publisher_id'] = $search_publisher;
+        $data ['category_id'] = $search_category;
+        $data ['material_id'] = $search_material;
+
+        //var_dump($pagination->offset);
+        //var_dump($data);exit;
+        $this->template->title = Lang::get('title_price_list');
+        $this->template->content = View::forge ( 'bangbaogia/index', $data );
 	}
 
 	/*****************************************************************************
