@@ -66,7 +66,7 @@ $(document).ready(function(){
 	//fill unit
 	fillUnitToSelectElement(".select_unit");
 	
-	$('.input_diameter, .input_length, .input_product_range, .input_product_price').autoNumeric('init',{aPad: false});
+	$('.input_diameter, .input_length, .input_product_range, .input_product_price, .input_edit_product_price').autoNumeric('init',{aPad: false});
 	
 	//get list Product Price data
 	//initListProductPrice();
@@ -98,7 +98,7 @@ $(document).ready(function(){
 	
 	//click edit group product
 	$("#frm_product_price_add .edit_group_product").click(editProductGroup);
-	// $("#product_edit_modal .edit_group_product").click(showEditGroup);
+	$("#frm_edit_product_price .edit_group_product").click(editProductGroup);
 	
 	//add product to group
 	$("#btn_product_group_add").click(clickAddProductToGroup);
@@ -203,34 +203,7 @@ function deleteProductPrice() {
 	});
 };
 
-function updateProductPrice(){
-	Omss.validate($("#frm_edit_product_price"), {
-			input_edit_product_price : {
-				required: true,
-				number: true,
-				maxlength : 10,
-			}
-		}, function(){
-			var data = {
-				'id': $("#edit_modal .input_edit_product_id").val(),
-				'input_price': $("#edit_modal .input_edit_product_price").val()
-			};
-		
-			// $('#edit_modal').modal('hide');
-			console.log("update price");
-			console.log(data);
-			Omss.post('/bangbaogia/update', data).done(function(data) {
-				console.log(data);
-				if (data.status == 1) {
-					//initListProductPrice();
-					//$('#edit_modal').modal('hide');
-					location.reload();
-				} else {
-					Omss.showError(data.message);
-				}
-			});
-		});
-}
+
 /*******************************************************************
  ***START Add Product***********************************************
  *******************************************************************/
@@ -540,10 +513,14 @@ function showModalDelete(id){
 	$('#delete_modal').modal('show');
 }
 
-function showModalEditPrice(id, price){
+function showModalEditPrice(id, unit_id, length, product_range, material_id, price){
 	console.log("showModalEditPrice id : " + id + " -- price : " +price);
 	//bind data to modal
 	$("#edit_modal .input_edit_product_id").val(id);
+	$("#edit_modal .select_unit").val(unit_id);
+	$("#edit_modal .input_length").val(length);
+	$("#edit_modal .input_product_range").val(product_range);
+	$("#edit_modal .select_material").val(material_id);
 	$("#edit_modal .input_edit_product_price").val(Omss.numberFormat(price));
 	$('#edit_modal').modal('show');
 }
@@ -731,4 +708,54 @@ function searchPrice(){
     window.location = '?page=1' + searchPublisherQuery + searchCategoryQuery + searchMaterialQuery;
 
     return false;
+}
+
+function updateProductPrice(){
+	Omss.validate($("#frm_edit_product_price"), {
+		input_edit_product_price : {
+			required: true,
+			number: true,
+			maxlength : 10,
+		},
+		input_length : {
+			required: false,
+			number: true,
+			maxlength : 10,
+		},
+		input_product_range : {
+			number: true,
+			maxlength : 10,
+		},
+	}, function(){
+		var priceId = $("#edit_modal .input_edit_product_id").val();
+		var rowPrice = '.js-row-price-' + priceId;
+		var productId = $(rowPrice).data('product_id');
+		var categoryId = $(rowPrice).data('category_id');
+		var diameter = $(rowPrice).data('diameter');
+		var data = {
+			'id': priceId,
+			'input_price': $("#edit_modal .input_edit_product_price").autoNumeric('get'),
+			'unit_id': $("#edit_modal .select_unit").val(),
+			'input_length': $("#edit_modal .input_length").val(),
+			'input_product_range': $("#edit_modal .input_product_range").val(),
+			'material_id': $("#edit_modal .select_material").val(),
+			'product_id': productId,
+			'category_id': categoryId,
+			'diameter': diameter,
+		};
+
+		// $('#edit_modal').modal('hide');
+		console.log("update price");
+		console.log(data);
+		Omss.post('/bangbaogia/update', data).done(function(data) {
+			// console.log(data);
+			if (data.status == 1) {
+				//initListProductPrice();
+				//$('#edit_modal').modal('hide');
+				location.reload();
+			} else {
+				Omss.showError(data.message);
+			}
+		});
+	});
 }
