@@ -285,21 +285,95 @@ class Controller_Bangbaogia extends Controller_Base
 		try{
 			//check method is post or get
 			if (Input::method() == 'POST'){
-				//init query update
-				$query = DB::update($this->tableName);
-				
 				$id = Input::post('id');
+
 				$input_price = Input::post('input_price');
 
+				$unit_id = Input::post('unit_id');
+
+				$material_id = Input::post('material_id');
+				$product_id = Input::post('product_id');
+				$category_id = Input::post('category_id');
+
+				$diameter = Input::post('diameter');
+				$length = Input::post('input_length');
+				$product_range = Input::post('input_product_range');
+
+				//get size id
+				$querySelect = DB::select_array(array('id'))->from('sizes');
+				$querySelect->where('diameter', (int)$diameter);
+				$querySelect->and_where('length', (int)$length);
+				$querySelect->and_where('product_range', (float)$product_range);
+				$querySelect->limit(1);
+				$size = $querySelect->execute()->as_array();
+				$size_id = null;
+
+				if(count($size) > 0){
+					$size_id = $size[0]['id'];
+				}else{
+					$modelSize = Model_Size::forge(array(
+						'diameter' => $diameter,
+						'length' => $length,
+						'product_range' => (float)$product_range,
+						'create_at' => date('Y-m-d H:i:s'),
+					));
+
+					$modelSize->save();
+
+					$size_id = $modelSize->id;
+
+				}
+
+				//get exist product
+				$querySelect = DB::select("products.id")
+					->from('products');
+				$querySelect->where('category_id', $category_id);
+				$querySelect->where('material_id', $material_id);
+				$querySelect->where('unit_id', $unit_id);
+				$querySelect->where('size_id', $size_id);
+				$querySelect->where('product_group', 0);
+				$querySelect->limit(1);
+				$data = $querySelect->execute()->as_array();
+				$productId = $product_id;
+
+				if(count($data) > 0){
+					//exist size
+					$productId = $data[0]['id'];
+				}else {
+
+					$modelProduct = Model_Product::forge(array(
+						'category_id' => $category_id,
+						'material_id' => $material_id,
+						'size_id' => $size_id,
+						'unit_id' => $unit_id,
+						'product_group' => 0,
+						'create_at' => date('Y-m-d H:i:s'),
+					));
+
+					$modelProduct->save();
+
+					$productId = $modelProduct->id;
+				}
+
+				//init query update
+				$query = DB::update($this->tableName);
+
+				$arrayUpdate = array(
+					'input_price' => $input_price
+				);
+
+				if($productId != $product_id){
+					$arrayUpdate['product_id'] = $productId;
+				}
 				//set data
-                $query->set(array(
-                    'input_price' => $input_price
-                ));
-                $query->where('id',Input::post('id'));
+                $query->set($arrayUpdate);
+
+                $query->where('id',$id);
 				//excute
                 $query->execute();
-				
+
 				$message = Lang::get('m_update_success');
+
 			} else {
 				//invalid method GET
 				$status = false;
@@ -307,7 +381,7 @@ class Controller_Bangbaogia extends Controller_Base
 			}
 		}catch (Exception $e){
 			$status = false;
-			$message = Lang::get('e_common_sql');
+			$message = Lang::get('e_common_sql'). ' (file:'.$e->getFile().')(line '.$e->getLine().') : '.$e->getMessage();
 		}
 		$result = array('status' => $status, 'message' => $message);
 		return $result;

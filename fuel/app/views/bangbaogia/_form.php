@@ -62,8 +62,7 @@
 			</div>
 		</div>
 		<div class="form-group col-md-6 col-sm-6">
-			<label class="control-label col-xs-12" >Giá
-				đầu vào</label> 
+			<label class="control-label col-xs-12" >Giá đầu vào</label>
 			<input maxlength="10" name="input_product_price" type="text" class="input_product_price form-control col-md-6 col-sm-12">
 		</div>
 	
