@@ -23,8 +23,15 @@ class Controller_Publisherdebt extends Controller_Base
 	
 	public function action_index()
 	{
+		$publisher_id = Input::param('publisher_id') ? Input::param('publisher_id') : null;
+		if($publisher_id){
+			$publisher = Model_Publisher::find($publisher_id);
+			$data['publisher_id'] = $publisher_id;
+			$data['publisher_name'] = urlencode($publisher->publisher_name);
+		}
+
 		$this->template->title = Lang::get('title_publisher_debt');
-		$this->template->content = View::forge('publisherdebt/index');
+		$this->template->content = View::forge('publisherdebt/index', $data);
 	}
 
 	/*****************************************************************************

@@ -89,8 +89,12 @@ $(document).ready(function(){
 				publisher_name = item['publisher_name'];
 				$(".nhacungcap_group_popup").append('<a onclick="selectPublisher(\''+no+'\',\''+publisher_name+'\')" class="btn btn-primary" data-dismiss="modal">'+publisher_name+'</a>');
 			});
-			
-			$('#nhacungcap_modal').modal('show');
+			if(publisherId){
+				selectPublisher(publisherId, publisherName)
+			}else{
+				$('#nhacungcap_modal').modal('show');
+			}
+
 		} else {
 			Omss.showError(data.message);
 		}

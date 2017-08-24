@@ -51,10 +51,17 @@
 				>
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;&nbsp;Thêm hàng hóa
 			</button>
+			<button type="submit" onclick="xemCongNoNCC();"
+					class="btn btn-primary col-md-2 col-md-push-2 col-sm-3 col-sm-push-0 col-xs-12 margin_bottom_10px">
+				<span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;&nbsp;&nbsp;Công nợ
+			</button>
+			<button type="submit" onclick="xemBaoGiaNCC();"
+					class="btn btn-primary col-md-2 col-md-push-3 col-sm-3 col-sm-push-0 col-xs-12 margin_bottom_10px">
+				<span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;&nbsp;&nbsp;Xem báo giá
+			</button>
 			<button type="submit" onclick="bindOrderData();"
-				class="btn btn-warning col-md-2 col-md-push-2 col-sm-3 col-sm-push-0 col-xs-12 margin_bottom_10px">
-				<span class="glyphicon glyphicon-floppy-saved"></span>&nbsp;&nbsp;&nbsp;&nbsp;Xem
-				dữ liệu
+				class="btn btn-primary col-md-2 col-md-push-4 col-sm-3 col-sm-push-0 col-xs-12 margin_bottom_10px">
+				<span class="glyphicon glyphicon-floppy-saved"></span>&nbsp;&nbsp;&nbsp;&nbsp;Xem dữ liệu
 			</button>
 			<!-- <button type="submit"
 				class="btn btn-success col-md-2 col-md-push-3 col-sm-3 col-sm-push-0 col-xs-12 margin_bottom_10px">

@@ -375,3 +375,15 @@ function clickSaveNewOrder(){
  * END SAVE ORDER LIST
  *************************************************************/
 
+function xemCongNoNCC(){
+	var publisher_id = $(".order_date_publisher").find(".select_publisher" ).val();
+	// var publisher_name = $(".order_date_publisher").find(".select_publisher" ).children(':selected').text();
+	// console.log(publisher_name);return;
+
+	window.location = '/no_nha_cung_cap?publisher_id=' + publisher_id;
+}
+
+function xemBaoGiaNCC(){
+	var publisher_id = $(".order_date_publisher").find(".select_publisher" ).val();
+	window.location = '/bang_bao_gia?page=1&publisher_id=' + publisher_id;
+}

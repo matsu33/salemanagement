@@ -1,3 +1,7 @@
+<script>
+	var publisherId = '<?php echo isset($publisher_id) ?  $publisher_id : '0'; ?>';
+	var publisherName = '<?php echo isset($publisher_name) ?  urldecode($publisher_name) : '0'; ?>';
+</script>
 <div class="modal fade" id="choncachxem_modal">
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">
