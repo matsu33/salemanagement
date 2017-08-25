@@ -1,3 +1,6 @@
+<input type="hidden" value="<?php echo $category_id; ?>" class="selected-category">
+<input type="hidden" value="<?php echo $material_id; ?>" class="selected-material">
+
 <div class="modal fade" id="chatlieu_modal">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
@@ -164,10 +167,49 @@
 		<h1 class="text-center">Kiểm kho</h1>
 		<hr>
 	</div>
-	<div class="row">
+	<div class="row js-form-search-instock">
+		<div class="form-group col-sm-2">
+			<label class="control-label col-xs-12">Hàng hóa</label>
+			<div class="input-group">
+				<select class="form-control select_category"></select>
+
+				<span class="input-group-addon">
+					<input type="checkbox" class="js-checkbox-select-search-category">
+				</span>
+			</div>
+		</div>
+		<div class="form-group col-sm-2" >
+			<label class="control-label col-xs-12">Chất liệu</label>
+			<div class="input-group">
+				<select class="form-control select_material"></select>
+
+				<span class="input-group-addon">
+					<input type="checkbox" class="js-checkbox-select-search-material">
+				</span>
+			</div>
+		</div>
+		<div class="form-group col-md-2 col-sm-2">
+			<label class="control-label" >Đường kính</label>
+			<input maxlength="10" type="text" name="input_diameter" class="input_diameter form-control col-md-6 col-sm-12" value="<?php echo $product_diameter; ?>" />
+		</div>
+		<div class="form-group col-md-2 col-sm-2">
+			<label class="control-label" >Chiều dài</label>
+			<input maxlength="10" name="input_length" type="text" class="input_length form-control col-md-6 col-sm-12" value="<?php echo $product_length; ?>">
+		</div>
+		<div class="form-group col-md-2 col-sm-2">
+			<label class="control-label" >Bước răng</label>
+			<input maxlength="10" name="input_product_range" type="text" class="input_product_range form-control col-md-6 col-sm-12" value="<?php echo $product_range; ?>">
+		</div>
+		<div class="form-group col-md-2 col-sm-2">
+			<label class="control-label" >Tồn kho >=</label>
+			<input maxlength="10" type="text" name="input_unit_instock" class="input_unit_instock form-control col-md-6 col-sm-12" value="<?php echo $unit_instock; ?>" />
+		</div>
 		<div class="col-md-12">
-			<button type="submit" class="btn-loc btn btn-default col-md-2 col-sm-3 col-sm-push-1 col-xs-12 margin_bottom_10px">
+			<button type="submit" class="js-start-search btn btn-default col-md-2 col-sm-3 col-sm-push-1 col-xs-12 margin_bottom_10px">
 				<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;&nbsp;Lọc
+			</button>
+			<button type="submit" class="js-reset-search btn btn-default col-md-2 col-sm-3 col-sm-push-2 col-xs-12 margin_bottom_10px">
+				<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;&nbsp;Xóa điều kiện lọc
 			</button>
 		</div>
 	</div>
@@ -192,10 +234,56 @@
 					</tr>
 				</thead>
 				<tbody>
-					
+<!--				var btnDetail = '<a onclick="viewHistoryOrderDetail('+products[i].id+','+Omss.numberFormat(products[i].unit_instock)+')" class="btn btn-inverse btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Xem chi tiết</a>';-->
+
+				<?php if(count($list_products) > 0 ){ ?>
+					<?php
+					$count = 1;
+					foreach($list_products as $item) :
+						$product_id = $item['id'];
+//						$product_image = $item['image'];
+//						$image = '<img class="center-block img-rounded table_thumbnail_image" src="'.$imageFolderUrl.'products/'.$product_image.'" alt="No-image"'.
+//							'onerror="this.onerror=null;this.src=\''.$noImageUrl.'\'" />';// <th>Hình ảnh</th>
+//						$product_id = $item['product_id'];
+//						$publisher_id = $item['publisher_id'];// <th>Nhà cung cấp</th>
+//						$publisher_name = $item['publisher_name'];// <th>Nhà cung cấp</th>
+						$category_id = $item['category_id'];// <th>Tên hàng hóa</th>
+						$category_name = $item['category_name'];// <th>Tên hàng hóa</th>
+						$material_id = $item['material_id'];
+						$material_name = $item['material_name'];// <th>Chất liệu</th>
+						$diameter = $item['diameter'];// <th>Đường kính</th>
+						$length = $item['length'];// <th>Chiều dài</th>
+						$product_range = $item['product_range'];// <th>Bước răng</th>
+						$unit_id = $item['unit_id'];
+						$unit_name = $item['unit_name'];// <th>Đơn vị</th>
+//						$input_price = $item['input_price'];// <th>Giá mua vào</th>
+//						$size_id = $item['size_id'];
+						$unit_instock = $item['unit_instock'];
+
+//						$linkEdit = '<a class="btn btn-inverse btn-primary btn_edit_delete" onclick="showModalEditPrice(\''.$no.'\',\''.$unit_id.'\',\''.$length.'\',\''.$product_range.'\',\''.$material_id.'\',\''.$input_price.'\')"><i class="fa fa-edit fa-lg"></i></a>';
+//						$linkDelete = '<a class="btn btn-small btn-danger btn_edit_delete" onclick="showModalDelete(\''.$no.'\')"><i class="fa fa-trash fa-lg"></i></a>';
+						$link = '<a onclick="viewHistoryOrderDetail('.$product_id.')" class="btn btn-inverse btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Xem chi tiết</a>';
+						$tr_class = "odd";
+						if($count%2 == 0){
+							$tr_class = "even";
+						}
+						$count++;
+						?>
+						<tr class="<?php echo $tr_class; ?> js-product-<?php echo $product_id; ?>" data-instock="<?php echo $unit_instock; ?>">
+							<td class=" "><?php echo $category_name; ?></td>
+							<td class=" "><?php echo $material_name; ?></td>
+							<td class=" "><?php echo $diameter; ?></td>
+							<td class=" "><?php echo $length; ?></td>
+							<td class=" "><?php echo $product_range; ?></td>
+							<td class=" "><?php echo $unit_name; ?></td>
+							<td class=" "><?php echo $unit_instock; ?></td>
+							<td class=" "><?php echo $link; ?></td>
+						</tr>
+					<?php endforeach; ?>
+				<?php } ?>
 				</tbody>
 			</table>
-			<br>
 		</div>
+		<div class="pagination"><?php echo html_entity_decode($pagination); ?></div>
 	</div>
 </div>
