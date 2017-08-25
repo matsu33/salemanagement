@@ -8,17 +8,33 @@ var columnsHistory = [{ "bSearchable": true }, { "bSearchable": true }, { "bSear
 var selectProductIdToViewHistory = null;
 var selectProductInstockToViewHistory = null;
 
+
+/********************************************************************************
+ ****** ON LOAD *****************************************************************
+ ********************************************************************************/
 $(document).ready(function() {
-	datatableLoc = Omss.dataTable($("#table_loc"), columnsList);
+	//fill category
+	fillCategoryToSelectElement(".select_category");
+
+	//fill material
+	fillMaterialToSelectElement(".select_material");
+
+	// datatableLoc = Omss.dataTable($("#table_loc"), columnsList);
 	datatableHistory = Omss.dataTable($("#history_order_detail_modal table"), columnsHistory);
 
-	$('#product_diameter, #product_length, #product_range, .input_current_instock').autoNumeric('init',{aPad: false});
+	$('#product_diameter, #product_length, #product_range, .input_current_instock, .input_unit_instock, .input_diameter, .input_length, .input_product_range').autoNumeric('init',{aPad: false});
 	
-    initSearch();
+    // initSearch();
     
-    $(".btn-loc").click(function() {
-        initSearch();
+    $(".js-start-search").click(function() {
+        // initSearch();
+		startSearch();
     });
+
+	$(".js-reset-search").click(function() {
+		window.location = '/kiemkho';
+	});
+
 });
 
 function initSearch() {
@@ -106,9 +122,9 @@ function excuteSearch() {
     });
 }
 
-function viewHistoryOrderDetail(pid, product_instock){
+function viewHistoryOrderDetail(pid){
 	selectProductIdToViewHistory = pid;
-	selectProductInstockToViewHistory = product_instock;
+	selectProductInstockToViewHistory = $('.js-product-'+pid).data('instock');
 	
 	console.log("viewHistoryOrderDetail");
 	var url = 'kiemkho/getHistory';
@@ -181,4 +197,41 @@ function updateProductInstock(){
         	Omss.showError(data.message);
         }
     });
+}
+
+function startSearch(){
+	var isCheckCategory = $('.js-checkbox-select-search-category').is( ":checked" );
+	var isCheckMaterial = $('.js-checkbox-select-search-material').is( ":checked" );
+
+	var searchCategoryQuery = '';
+	var searchMaterialQuery = '';
+	var searchDiameterQuery = '';
+	var searchLengthQuery = '';
+	var searchRangeQuery = '';
+	var searchInstockQuery = '';
+
+	if(isCheckCategory){
+		searchCategoryQuery = '&category_id=' + parseInt($(".js-form-search-instock .select_category" ).val());
+	}
+
+	if(isCheckMaterial){
+		searchMaterialQuery = '&material_id=' + parseInt($(".js-form-search-instock .select_material" ).val());
+	}
+
+	if($(".js-form-search-instock .input_diameter" ).val() != ''){
+		searchDiameterQuery = '&product_diameter=' + parseInt($(".js-form-search-instock .input_diameter" ).autoNumeric('get'));
+	}
+	if($(".js-form-search-instock .input_length" ).val() != ''){
+		searchLengthQuery = '&product_length=' + parseInt($(".js-form-search-instock .input_length" ).autoNumeric('get'));
+	}
+	if($(".js-form-search-instock .input_product_range" ).val() != ''){
+		searchRangeQuery = '&product_range=' + parseInt($(".js-form-search-instock .input_product_range" ).autoNumeric('get'));
+	}
+	if($(".js-form-search-instock .input_unit_instock" ).val() != ''){
+		searchInstockQuery = '&unit_instock=' + parseInt($(".js-form-search-instock .input_unit_instock" ).autoNumeric('get'));
+	}
+
+	window.location = '?page=1' + searchCategoryQuery + searchMaterialQuery + searchDiameterQuery + searchLengthQuery + searchRangeQuery + searchInstockQuery;
+
+	return false;
 }

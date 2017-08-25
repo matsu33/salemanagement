@@ -691,7 +691,6 @@ function searchPrice(){
     var searchPublisherQuery = '';
     var searchCategoryQuery = '';
     var searchMaterialQuery = '';
-    var searchPageQuery = '';
 
     if(isCheckPublisher){
         searchPublisherQuery = '&publisher_id=' + parseInt($("#frm_product_price_add .select_publisher" ).val());

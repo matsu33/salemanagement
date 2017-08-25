@@ -15,6 +15,82 @@ class Controller_Kiemkho extends Controller_Base {
 		$data ["subnav"] = array (
 				'index' => 'active' 
 		);
+
+		//get parameters
+		$page = Input::param ( 'page' ) ? Input::param ( 'page' ) : 1;
+		$material_id = Input::param ( 'material_id' ) ? Input::param ( 'material_id' ) : '';
+		$category_id = Input::param ( 'category_id' ) ? Input::param ( 'category_id' ) : '';
+		$product_diameter = Input::param ( 'product_diameter' ) ? Input::param ( 'product_diameter' ) : '';
+		$product_length = Input::param ( 'product_length' ) ? Input::param ( 'product_length' ) : '';
+		$product_range = Input::param ( 'product_range' ) ? Input::param ( 'product_range' ) : '';
+		$unit_instock = Input::param ( 'unit_instock' ) ? Input::param ( 'unit_instock' ) : 0;
+
+		$materialSearchUrl = $material_id == '' ? '' : '&material_id='.$material_id;
+		$categorySearchUrl = $category_id == '' ? '' : '&category_id='.$category_id;
+		$productDiameterSearchUrl = $product_diameter == '' ? '' : '&product_diameter='.$product_diameter;
+		$productLengthSearchUrl = $product_length == '' ? '' : '&product_length='.$product_length;
+		$productRangeSearchUrl = $product_range == '' ? '' : '&product_range='.$product_range;
+		$unitInstockSearchUrl = $unit_instock == '' ? '' : '&unit_instock='.$unit_instock;
+
+		// pagination config
+		$config = array (
+			// 'pagination_url' => '/manage/company',
+			'pagination_url' => '/kiemkho/index?'.$materialSearchUrl.$categorySearchUrl.$productDiameterSearchUrl.$productLengthSearchUrl.$productRangeSearchUrl.$unitInstockSearchUrl,
+			'total_items' => 0,
+			'per_page' => PRODUCT_PER_PAGE,
+			'uri_segment' => 'page',
+			'show_first' => true,
+			'show_last' => true
+		);
+
+		// Create a pagination instance named 'mypagination'
+		$pagination = Pagination::forge ( 'mypagination', $config );
+
+		$querySelect = DB::select ( "products.id", "unit_instock", "category_id", "category_name", "material_id", "material_name", "product_group", "size_id", "diameter", "length", "product_range", "unit_id", "unit_name", "image" )->from ( "products" )->join ( 'categories', 'LEFT' )->on ( 'products.category_id', '=', 'categories.id' )->join ( 'materials', 'LEFT' )->on ( 'products.material_id', '=', 'materials.id' )->join ( 'sizes', 'LEFT' )->on ( 'products.size_id', '=', 'sizes.id' )->join ( 'units', 'LEFT' )->on ( 'products.unit_id', '=', 'units.id' );
+
+		if($category_id != '') {
+			$querySelect->where('products.category_id', $category_id);
+		}
+		if($material_id != ''){
+			$querySelect->where ( 'products.material_id', $material_id );
+		}
+		if($product_diameter != ''){
+			$querySelect->where ( 'sizes.diameter', $product_diameter );
+		}
+		if($product_length != ''){
+			$querySelect->where ( 'sizes.length', $product_length );
+		}
+		if($product_range != ''){
+			$querySelect->where ( 'sizes.product_range', $product_range );
+		}
+		if($unit_instock >= 0){
+			$querySelect->where ( 'unit_instock','>=', $unit_instock );
+		}
+		$querySelect->where ( 'products.status', '1' );
+
+		$countTotalList = $querySelect->execute ()->as_array ();
+		$total_items = count($countTotalList);
+		$pagination->total_items = $total_items;
+		$paginationOffset = $page * PRODUCT_PER_PAGE - PRODUCT_PER_PAGE;
+		$data ['list_products'] = $querySelect->order_by ( 'products.create_at', 'desc' )->limit ( $pagination->per_page )->offset ( $paginationOffset )->execute ()->as_array ();
+
+//		var_dump('<pre>');
+//		var_dump(DB::last_query());
+//		var_dump('</pre>');
+//
+//		var_dump('<pre>');
+//		var_dump($data ['list_products']);
+//		var_dump('</pre>');
+
+		$data ['pagination'] = $pagination->render ();
+
+		$data ['material_id'] = $material_id;
+		$data ['category_id'] = $category_id;
+		$data ['product_diameter'] = $product_diameter;
+		$data ['product_length'] = $product_length;
+		$data ['product_range'] = $product_range;
+		$data ['unit_instock'] = $unit_instock;
+
 		$this->template->title = Lang::get ( 'title_kiemkho' );
 		$this->template->content = View::forge ( 'kiemkho/index', $data );
 	}
