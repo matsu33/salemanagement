@@ -37,7 +37,7 @@ class Controller_Bangbaogia extends Controller_Base
 		// pagination config
 		$config = array (
 				// 'pagination_url' => '/manage/company',
-				'pagination_url' => '/bangbaogia/index?'.$publisherSearchUrl.$categorySearchUrl,
+				'pagination_url' => '/bangbaogia/index?'.$publisherSearchUrl.$categorySearchUrl.$materialSearchUrl,
 				'total_items' => 0,
 				'per_page' => PRODUCT_PER_PAGE,
 				'uri_segment' => 'page',

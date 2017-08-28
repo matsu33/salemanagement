@@ -1,7 +1,10 @@
-<script>
-	var publisherId = '<?php echo isset($publisher_id) ?  $publisher_id : '0'; ?>';
-	var publisherName = '<?php echo isset($publisher_name) ?  urldecode($publisher_name) : '0'; ?>';
-</script>
+<input type="hidden" value="<?php echo $publisher_id; ?>" class="selected-publisher">
+<input type="hidden" value="<?php echo urldecode($search_date); ?>" class="selected-search-date">
+<input type="hidden" value="<?php echo urldecode($search_day); ?>" class="selected-search-day">
+<input type="hidden" value="<?php echo urldecode($search_month); ?>" class="selected-search-month">
+<input type="hidden" value="<?php echo $search_year; ?>" class="selected-search-year">
+<input type="hidden" value="<?php echo $search_type; ?>" class="selected-search-type">
+
 <div class="modal fade" id="choncachxem_modal">
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">
@@ -198,17 +201,68 @@
 		<hr>
 	</div>
 	<div class="row">
+		<div class="form-group col-sm-3">
+			<label class="control-label col-xs-12">Nhà cung cấp</label>
+			<div class="input-group">
+				<select class="form-control select_publisher js-select-publisher-indebt"></select>
+				<span class="input-group-addon">
+					<input type="checkbox" class="js-checkbox-select-search-publisher">
+				</span>
+			</div>
+		</div>
+		<div class="form-group col-sm-3">
+			<label class="control-label col-xs-12">Chọn ngày</label>
+			<div class="input-group">
+				<div class="input-group date js-date-control">
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+					<input type="text" class="form-control js-input-date-1 js-input-date" readonly>
+				</div>
+				<span class="input-group-addon">
+					<input type="radio" name="js-select-search-type" value="1" class="js-radio-date-1 js-checkbox-select-search-day" checked>
+				</span>
+			</div>
+		</div>
+		<div class="form-group col-sm-3">
+			<label class="control-label col-xs-12">Chọn tháng</label>
+			<div class="input-group">
+				<div class="input-group date js-month-control">
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+					<input type="text" class="form-control js-input-date-2 js-input-month" readonly>
+				</div>
+				<span class="input-group-addon">
+					<input type="radio" name="js-select-search-type" value="2" class="js-radio-date-2 js-checkbox-select-search-month">
+				</span>
+			</div>
+		</div>
+		<div class="form-group col-sm-3">
+			<label class="control-label col-xs-12">Chọn năm</label>
+			<div class="input-group">
+				<div class="input-group date js-year-control">
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+					<input type="text" class="form-control js-input-date-3 js-input-year" readonly>
+				</div>
+				<span class="input-group-addon">
+					<input type="radio" name="js-select-search-type" value="3" class="js-radio-date-3 js-checkbox-select-search-year">
+				</span>
+			</div>
+		</div>
+
 		<div class="col-md-12">
-			<button type="submit"
-				class="btn btn-default col-sm-3 col-xs-12 margin_bottom_10px"
-				data-toggle="modal" data-target="#nhacungcap_modal">
-				<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;&nbsp;Chọn
-				NCC
+			<button type="submit" class="btn btn-success col-md-push-1 col-sm-2 col-xs-12 margin_bottom_10px js-start-search">
+				<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;&nbsp;Lọc
+			</button>
+			<button type="submit" class="btn btn-default col-md-push-2 col-sm-2 col-xs-12 margin_bottom_10px js-reset-search">
+				<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;&nbsp;Xóa điều kiện lọc
 			</button>
 			<button type="submit" onclick="clickThanhToanCongNo();" 
-				class="btn btn-primary col-sm-3 col-sm-offset-1 col-xs-12 margin_bottom_10px">
-				<span class="glyphicon glyphicon-saved"></span>&nbsp;&nbsp;&nbsp;&nbsp;Thanh
-				toán
+				class="btn btn-primary col-md-push-3 col-sm-2 col-xs-12 margin_bottom_10px">
+				<span class="glyphicon glyphicon-saved"></span>&nbsp;&nbsp;&nbsp;&nbsp;Thanh toán
 			</button>
 		</div>
 	</div>
@@ -218,7 +272,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-12 congno_ngay">
+		<div class="col-md-12">
 			<table class="table table-condensed table-hover table-striped"
 				style="">
 				<thead>
@@ -234,28 +288,54 @@
 					</tr>
 				</thead>
 				<tbody>
-					
-				</tbody>
-			</table>
-			
-			<br>
-		</div>
-		<div class="col-md-12 congno_thang">
-			<table class="table table-condensed table-hover table-striped"
-				style="">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Ngày nhập hàng</th>
-						<th >Số hóa đơn đã thanh toán</th>
-						<th >Số tiền đã thanh toán</th>
-						<th >Số hóa đơn chưa thanh toán</th>
-						<th >Công nợ</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<!-- <tr>
+				<?php if(count($list_debt) > 0 ){ ?>
+					<?php
+					$count = 1;
+					foreach($list_debt as $item) :
+						if($search_type == '1'){
+							//day
+							$inputDate = $item['day'].'/'.$item['month'].'/'.$item['year'];
+						}elseif($search_type == '2'){
+							//month
+							$inputDate = $item['month'].'/'.$item['year'];
+						}elseif($search_type == '3'){
+							//year
+							$inputDate = $item['year'];
+						}
+						$publisher_id = $item['publisher_id'];
+						$publisher_name = $item['publisher_name'];
+						$paidCount = $item['paidCount'];
+						$debtCount = $item['debtCount'];
+						$paidTotal = $item['paidTotal'];
+						$debtTotal = $item['debtTotal'];
+						$listOrderId = $item['listOrderId'];
+
+						$link = '';
+						$checkbox = '<input type="checkbox" value="'.$publisher_id.'">';
+
+						$tr_class = "odd";
+						if($count%2 == 0){
+							$tr_class = "even";
+						}
+						$count++;
+						?>
+						<tr class="<?php echo $tr_class; ?>"
+							data-inputDate="<?php echo $inputDate; ?>"
+							data-publisher_id="<?php echo $publisher_id; ?>"
+							data-listOrderId="<?php echo $listOrderId; ?>"
+						>
+							<td class=" "><?php echo $checkbox; ?></td>
+							<td class=" "><?php echo $inputDate; ?></td>
+							<td class=" "><?php echo $publisher_name; ?></td>
+							<td class=" "><?php echo $paidCount; ?></td>
+							<td class=" "><?php echo $paidTotal; ?></td>
+							<td class=" "><?php echo $debtCount; ?></td>
+							<td class=" "><?php echo $debtTotal; ?></td>
+							<td class=" "><?php echo $link; ?></td>
+						</tr>
+					<?php endforeach; ?>
+				<?php } ?>
+				<!-- <tr>
 						<td ><input type="checkbox"></td>
 						<td >2014/11/04</td>
 						<td>3</td>
@@ -308,50 +388,7 @@
 			
 			<br>
 		</div>
-		<div class="col-md-12 congno_nam">
-			<table class="table table-condensed table-hover table-striped"
-				style="">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th >Tháng nhập hàng</th>
-						<th >Số hóa đơn đã thanh toán</th>
-						<th >Số tiền đã thanh toán</th>
-						<th >Số hóa đơn chưa thanh toán</th>
-						<th >Công nợ</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<!-- <tr>
-						<td ><input type="checkbox"></td>
-						<td >2014/11</td>
-						<td>3</td>
-						<td>2.000.000</td>
-						<td>3</td>
-						<td>2.000.000</td>
-						<td ><a class="btn btn-inverse btn-primary"
-							data-toggle="modal" data-target="#danhsachhoadon_nam_modal"><span
-								class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Thanh toán</a>
-						</td>
-					</tr>
-					<tr>
-						<td ><input type="checkbox"></td>
-						<td >2014/10</td>
-						<td >3</td>
-						<td>12.000.000</td>
-						<td >3</td>
-						<td>2.000.000</td>
-						<td ><a class="btn btn-inverse btn-primary"
-							data-toggle="modal" data-target="#danhsachhoadon_nam_modal"><span
-								class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Thanh toán</a>
-						</td>
-					</tr> -->
-				</tbody>
-			</table>
-			
-			<br>
-		</div>
+
 	</div>
 </div>
 <?php echo render('customerdebt/_form_order_detail'); ?>

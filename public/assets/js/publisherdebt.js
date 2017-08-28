@@ -71,6 +71,9 @@ var columnsListOrderDetail = [{ "bSearchable": false, "sClass": "center", "bSort
  ****** ON LOAD *****************************************************************
  ********************************************************************************/
 $(document).ready(function(){
+	//fill publisher
+	fillPublisherToSelectElement(".select_publisher");
+
 	$(".congno_ngay, .congno_thang, .congno_nam").hide();
 	
 //	datatableOrderList = Omss.dataTable($(".congno_ngay table"), columnsListDate);
@@ -89,36 +92,48 @@ $(document).ready(function(){
 				publisher_name = item['publisher_name'];
 				$(".nhacungcap_group_popup").append('<a onclick="selectPublisher(\''+no+'\',\''+publisher_name+'\')" class="btn btn-primary" data-dismiss="modal">'+publisher_name+'</a>');
 			});
-			if(publisherId){
-				selectPublisher(publisherId, publisherName)
-			}else{
-				$('#nhacungcap_modal').modal('show');
-			}
+			// if(publisherId){
+			// 	selectPublisher(publisherId, publisherName)
+			// }else{
+			// 	$('#nhacungcap_modal').modal('show');
+			// }
 
 		} else {
 			Omss.showError(data.message);
 		}
 	});
 	
-	$('.doanh_thu_ngay_time').datetimepicker({
+	$('.js-date-control').datetimepicker({
         defaultDate: new Date(),
         pickTime: false,
         format: "DD/MM/YYYY"
     });
+	var selectedSearchDay = $('.selected-search-day').val();
+	if(selectedSearchDay != '') {
+		$('.js-input-date').val(selectedSearchDay);
+	}
 
-    $('.doanh_thu_thang_time').datetimepicker({
+	$('.js-month-control').datetimepicker({
         defaultDate: new Date(),
         pickTime: false,
         minViewMode: 'months',
         format: "MM/YYYY"
     });
+	var selectedSearchMonth = $('.selected-search-month').val();
+	if(selectedSearchMonth != '') {
+		$('.js-input-month').val(selectedSearchMonth);
+	}
 
-    $('.doanh_thu_nam_time').datetimepicker({
+    $('.js-year-control').datetimepicker({
         defaultDate: new Date(),
         pickTime: false,
         minViewMode: 'years',
         format: "YYYY"
     });
+	var selectedSearchYear = $('.selected-search-year').val();
+	if(selectedSearchYear != '') {
+		$('.js-input-year').val(selectedSearchYear);
+	}
     
 	$(".congno_xemngay_btn").click(function(){
 		$('#choncachxem_modal').modal('hide');
@@ -127,7 +142,7 @@ $(document).ready(function(){
 		$(".congno_nam").hide();
 		
 		searchCondition.Type = "1";
-        searchCondition.Value = $('.doanh_thu_ngay_time').find(".input_date").val();
+        searchCondition.Value = $('.js-date-control').find(".input_date").val();
         excuteSearch();
 	});
 	
@@ -152,7 +167,17 @@ $(document).ready(function(){
         searchCondition.Value = $('.doanh_thu_nam_time').find(".input_date").val();
         excuteSearch();
 	});
-	
+
+	var selectedSearchType = $('.selected-search-type').val();
+	$('.js-radio-date-'+selectedSearchType).prop("checked", true);
+
+	$(".js-start-search").click(function(){
+		startSearch();
+	});
+	$(".js-reset-search").click(function(){
+		resetSearch();
+	});
+
 });
 
 function selectPublisher(no, publisher_name){
@@ -705,4 +730,42 @@ function bindOrderDetailWithData(data){
 		}
 	);
 	dataTableOrderDetail.fnDraw();
+}
+
+function startSearch(){
+	var isCheckPublisher = $('.js-checkbox-select-search-publisher').is( ":checked" );
+	var searchType = $('input[name="js-select-search-type"]:checked').val();
+	var searchDate = $('.js-input-date-' + searchType).val();
+	var dateCondition = getFromToDate(searchType, searchDate);
+	var searchDay = $('.js-input-date').val();
+	var searchMonth = $('.js-input-month').val();
+	var searchYear = $('.js-input-year').val();
+	console.log('searchType :' +searchType);
+	console.log('searchDate :');
+	console.log(searchDate);
+	// console.log('dateCondition :');
+	// console.log(encodeURI(dateCondition.date_from));
+	// console.log(encodeURI(dateCondition.date_to));
+
+	var searchPublisherQuery = '';
+	var searchTypeQuery = '&search_type=' + searchType;
+	var searchDateQuery = '&search_date=' + searchDate;
+	var searchDayQuery = '&search_day=' + searchDay;
+	var searchMonthQuery = '&search_month=' + searchMonth;
+	var searchYearQuery = '&search_year=' + searchYear;
+
+	if(isCheckPublisher){
+		searchPublisherQuery = '&publisher_id=' + parseInt($(".js-select-publisher-indebt" ).val());
+	}
+	// console.log('?page=1' + searchPublisherQuery + searchTypeQuery + searchDateQuery + searchDayQuery + searchMonthQuery + searchYearQuery);
+	// return false;
+	window.location = '?page=1' + searchPublisherQuery + searchTypeQuery + searchDateQuery + searchDayQuery + searchMonthQuery + searchYearQuery;
+
+
+
+	return false;
+}
+
+function resetSearch(){
+	window.location = '/no_nha_cung_cap';
 }
