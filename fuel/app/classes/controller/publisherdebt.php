@@ -80,17 +80,19 @@ class Controller_Publisherdebt extends Controller_Base
 //			"orders.total",
 //			"orders.update_at",
 //			"orders.user_id",
-			DB::expr ('GROUP_CONCAT(orders.id SEPARATOR \',\') as listOrderId'),
+			DB::expr ('GROUP_CONCAT(case when orders.status = 2 then orders.id end SEPARATOR \',\' ) as listDebtOrderId'),
 			DB::expr ('YEAR(orders.create_at) as year'),
 			DB::expr ('SUM(case when orders.status = 1 then 1 else 0 end) AS paidCount'),
 			DB::expr ('SUM(case when orders.status = 2 then 1 else 0 end) AS debtCount'),
 			DB::expr ('SUM(case when orders.status = 1 then orders.paid else 0 end) AS paidTotal'),
 			DB::expr ('SUM(case when orders.status = 2 then orders.debt else 0 end) AS debtTotal'));
 
-		if($search_type == '1'){
+		if($search_type == '1' || $search_type == '2'){
+			//day or month
 			array_push($selectColumns, DB::expr ('MONTH(orders.create_at) as month'),
 				DB::expr ('DAY(orders.create_at) as day'));
-		}elseif ($search_type == '2'){
+		}elseif ($search_type == '3'){
+			//year
 			array_push($selectColumns, DB::expr ('MONTH(orders.create_at) as month'));
 		}
 
@@ -98,6 +100,7 @@ class Controller_Publisherdebt extends Controller_Base
 		$querySelect->join('publishers','left')->on('orders.publisher_id', '=', 'publishers.id');
 // 			$querySelect->join('customers','left')->on('orders.customer_id', '=', 'customers.id');
 		$querySelect->where('orders.order_type', '=', 1);
+//		$querySelect->where('debtCount', '>=', 1);
 // 			$querySelect->where('orders.status', '=', 1);
 		if($publisher_id != ''){
 			$querySelect->where('orders.publisher_id', '=', $publisher_id);
@@ -111,12 +114,17 @@ class Controller_Publisherdebt extends Controller_Base
 
 		//GROUP BY YEAR(create_at), MONTH(create_at), DAY(create_at)
 		if($search_type == '1'){
-			$querySelect->group_by('orders.publisher_id', DB::expr ('YEAR(orders.create_at)'), DB::expr ('MONTH(orders.create_at)'), DB::expr ('DAY(orders.create_at)'));
+			//day
+			$querySelect->group_by('orders.publisher_id');
 		}elseif ($search_type == '2'){
-			$querySelect->group_by('orders.publisher_id', DB::expr ('YEAR(orders.create_at)'), DB::expr ('MONTH(orders.create_at)'));
+			//month
+			$querySelect->group_by('orders.publisher_id', DB::expr ('YEAR(orders.create_at)'), DB::expr ('MONTH(orders.create_at)'), DB::expr ('DAY(orders.create_at)'));
 		}elseif ($search_type == '3'){
-			$querySelect->group_by('orders.publisher_id', DB::expr ('YEAR(orders.create_at)'));
+			//year
+			$querySelect->group_by('orders.publisher_id', DB::expr ('YEAR(orders.create_at)'), DB::expr ('MONTH(orders.create_at)'));
 		}
+
+		$querySelect->having('debtCount', '>=', 1);
 
 		$countTotalList = $querySelect->execute ()->as_array ();
 
@@ -126,8 +134,8 @@ class Controller_Publisherdebt extends Controller_Base
 
 		// set list search
 		$paginationOffset = $page * PRODUCT_PER_PAGE - PRODUCT_PER_PAGE;
-//		$data ['list_debt'] = $querySelect->order_by ( 'orders.create_at', 'desc' )->limit ( $pagination->per_page )->offset ( $paginationOffset )->execute ()->as_array ();
-		$data ['list_debt'] = $querySelect->order_by ( 'orders.create_at', 'desc' )->execute ()->as_array ();
+		$data ['list_debt'] = $querySelect->order_by ( 'orders.create_at', 'desc' )->limit ( $pagination->per_page )->offset ( $paginationOffset )->execute ()->as_array ();
+//		$data ['list_debt'] = $querySelect->order_by ( 'orders.create_at', 'desc' )->execute ()->as_array ();
 
 		var_dump('<pre>');
 		var_dump(DB::last_query());
