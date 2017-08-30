@@ -296,15 +296,12 @@
 						if($search_type == '1'){
 							//day
 							$inputDate = $item['day'].'/'.$item['month'].'/'.$item['year'];
-							$link = '<a class="btn btn-inverse btn-primary" href="#">Xem chi tiết</a>';
 						}elseif($search_type == '2'){
 							//month
 							$inputDate = $item['day'].'/'.$item['month'].'/'.$item['year'];
-							$link = '<a class="btn btn-inverse btn-primary" href="#">Xem chi tiết</a>';
 						}elseif($search_type == '3'){
 							//year
 							$inputDate = $item['month'].'/'.$item['year'];
-							$link = '<a class="btn btn-inverse btn-primary" href="#">Xem chi tiết</a>';
 						}
 						$publisher_id = $item['publisher_id'];
 						$publisher_name = $item['publisher_name'];
@@ -312,8 +309,9 @@
 						$debtCount = $item['debtCount'];
 						$paidTotal = $item['paidTotal'];
 						$debtTotal = $item['debtTotal'];
-						$listDebtOrderId = $item['listDebtOrderId'];
+						$listOrderId = $item['listOrderId'];
 
+						$link = '<button class="btn btn-inverse btn-primary js-view-list-order" data-listorderid="'.$listOrderId.'">Xem chi tiết</button>';
 
 						$checkbox = '<input type="checkbox" value="'.$publisher_id.'">';
 
@@ -326,7 +324,7 @@
 						<tr class="<?php echo $tr_class; ?>"
 							data-inputdate="<?php echo $inputDate; ?>"
 							data-publisherid="<?php echo $publisher_id; ?>"
-							data-listdebtorderid="<?php echo $listDebtOrderId; ?>"
+							data-listorderid="<?php echo $listOrderId; ?>"
 						>
 							<td class=" "><?php echo $checkbox; ?></td>
 							<td class=" "><?php echo $inputDate; ?></td>

@@ -80,7 +80,8 @@ class Controller_Publisherdebt extends Controller_Base
 //			"orders.total",
 //			"orders.update_at",
 //			"orders.user_id",
-			DB::expr ('GROUP_CONCAT(case when orders.status = 2 then orders.id end SEPARATOR \',\' ) as listDebtOrderId'),
+//			DB::expr ('GROUP_CONCAT(case when orders.status = 2 then orders.id end SEPARATOR \',\' ) as listDebtOrderId'),
+			DB::expr ('GROUP_CONCAT(orders.id SEPARATOR \',\' ) as listOrderId'),
 			DB::expr ('YEAR(orders.create_at) as year'),
 			DB::expr ('SUM(case when orders.status = 1 then 1 else 0 end) AS paidCount'),
 			DB::expr ('SUM(case when orders.status = 2 then 1 else 0 end) AS debtCount'),
@@ -137,9 +138,9 @@ class Controller_Publisherdebt extends Controller_Base
 		$data ['list_debt'] = $querySelect->order_by ( 'orders.create_at', 'desc' )->limit ( $pagination->per_page )->offset ( $paginationOffset )->execute ()->as_array ();
 //		$data ['list_debt'] = $querySelect->order_by ( 'orders.create_at', 'desc' )->execute ()->as_array ();
 
-		var_dump('<pre>');
-		var_dump(DB::last_query());
-		var_dump('</pre>');
+//		var_dump('<pre>');
+//		var_dump(DB::last_query());
+//		var_dump('</pre>');
 ////
 //		var_dump('<pre>');
 //		var_dump($data ['list_debt']);
@@ -251,7 +252,7 @@ class Controller_Publisherdebt extends Controller_Base
 				$query->set(array(
 						'paid' => DB::expr('total'),
 						'debt' => 0,
-						'date_paid' => DB::expr('update_at'),
+						'date_paid' => date('Y-m-d H:i:s'),
 						'status' => Constant::STATUS_PAID
 				));
 				$query->where('id','IN',$orderListId);
@@ -311,5 +312,72 @@ class Controller_Publisherdebt extends Controller_Base
 		}
 
 		return $result;
+	}
+
+	/**
+	 * search
+	 * @return multitype:boolean string |multitype:boolean unknown |multitype:boolean NULL
+	 */
+	public function action_getlistorder()
+	{
+		$data = null;
+
+		if (Input::method() == 'POST' || true) {
+
+			$listOrderId   = Input::param('listOrderId');
+			if ($listOrderId == null || $listOrderId == '') {
+				return array(
+					'status' => false,
+					'message' => 'Danh sách rỗng!'
+				);
+			}
+			$querySelect = DB::select("orders.create_at",
+				"orders.customer_id",
+				"orders.customer_type",
+				"orders.date_paid",
+				"orders.debt",
+				"orders.id",
+				"orders.order_type",
+				"orders.paid",
+				"publisher_id",
+				"publisher_name",
+				"orders.status",
+				"orders.total",
+				"orders.update_at",
+				"orders.user_id")->from('orders');
+			$querySelect->join('publishers','left')->on('orders.publisher_id', '=', 'publishers.id');
+// 			$querySelect->join('customers','left')->on('orders.customer_id', '=', 'customers.id');
+			$querySelect->where('orders.order_type', '=', 1);
+// 			$querySelect->where('orders.status', '=', 1);
+//			$querySelect->where('orders.create_at', '>=', $date_from);
+//			$querySelect->where('orders.create_at', '<=', $date_to);
+//			if($publisherid){
+//				$querySelect->where('orders.publisher_id', '=', $publisherid);
+//			}
+// 			$querySelect->where('orders.order_type', Constant::ORDER_TYPE_WHOLESALE);
+
+// 			$querySelect->where('orders.status', '1');
+// 			$querySelect->order_by('orders.date_paid');
+			$id_array = explode(',', $listOrderId);
+			$querySelect->where('orders.id', 'in', $id_array);
+			$data = $querySelect->execute()->as_array();
+
+			if (count($data) <= 0) {
+				return array(
+					'status' => false,
+					'message' => 'Không tìm thấy đơn hàng nào!'
+				);
+			}
+
+			return array(
+				'status' => true,
+				'data' => $data
+			);
+		}
+
+		return array(
+			'status' => false,
+			'message' => Lang::get('e_not_valid_method')
+		);
 	}
 }

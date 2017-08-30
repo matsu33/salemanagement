@@ -77,9 +77,9 @@ $(document).ready(function(){
 	$(".congno_ngay, .congno_thang, .congno_nam").hide();
 	
 //	datatableOrderList = Omss.dataTable($(".congno_ngay table"), columnsListDate);
-	datatableOrderListDateDetail = Omss.dataTable($("#danhsachhoadon_ngay_modal table"), columnsListDateDetail);
+// 	datatableOrderListDateDetail = Omss.dataTable($("#danhsachhoadon_ngay_modal table"), columnsListDateDetail);
 //	datatableOrderListMonthDetail = Omss.dataTable($("#danhsachhoadon_thang_modal table"), columnsListMonthDetail);
-	datatableOrderListYearDetail = Omss.dataTable($("#danhsachhoadon_nam_modal table"), columnsListYearDetail);
+// 	datatableOrderListYearDetail = Omss.dataTable($("#danhsachhoadon_nam_modal table"), columnsListYearDetail);
 	
 	Omss.post('/nhacungcap/getAll').done(function(data) {
 		console.log(data);
@@ -178,6 +178,10 @@ $(document).ready(function(){
 		resetSearch();
 	});
 
+	$('.js-view-list-order').click(function(){
+		var listOrderId = $(this).data('listorderid');
+		viewListOrder(listOrderId);
+	});
 });
 
 function selectPublisher(no, publisher_name){
@@ -606,8 +610,9 @@ function paidWithOrderListId(){
 		Omss.post('/publisherdebt/paid', dataPost).done(function(data) {
 			console.log(data);
 			if (data.status == 1) {
-				excuteSearch();
-				$("#danhsachhoadon_ngay_modal").modal("hide");
+				// excuteSearch();
+				// $("#danhsachhoadon_ngay_modal").modal("hide");
+				location.reload();
 			} else {
 				Omss.showError(data.message);
 			}
@@ -768,4 +773,61 @@ function startSearch(){
 
 function resetSearch(){
 	window.location = '/no_nha_cung_cap';
+}
+
+function viewListOrder(listOrderId){
+	console.log(listOrderId);
+	var dataPost = {
+		'listOrderId': listOrderId
+	};
+
+	Omss.post('/publisherdebt/getlistorder', dataPost).done(function(data) {
+		console.log(data);
+		if (data.status == 1) {
+			// excuteSearch();
+			$("#danhsachhoadon_ngay_modal").modal("show");
+			var tableBody = $("#danhsachhoadon_ngay_modal .modal-body table tbody");
+			tableBody.html('');
+			$.each( data.data, function(key, item){
+				var dateCreate = item['create_at'];
+				var createFullDate = new Date(dateCreate);
+				var createdDate = createFullDate.getDate();
+				var createdMonth = createFullDate.getMonth() + 1;
+				var createdYear = createFullDate.getFullYear();
+				var inputDate = createdDate + '/' + createdMonth + '/' + createdYear;
+
+				var total = item['total'];
+				var publisher_name = item['publisher_name'];
+				var date_paid = '';
+				var status = item['status'];
+				var orderId = item['id'];
+				statusString = '';
+				var checkboxThanhToan = '';
+
+				if(status == 1){
+					statusString = 'Đã thanh toán';
+					date_paid = getFormattedDate(item['date_paid']);
+				}else{
+					checkboxThanhToan = '<input type="checkbox" value="'+orderId+'">';
+					statusString = '<a onclick="viewOrderDetail('+orderId+')" class="btn btn-inverse btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Xem chi tiết</a>';
+				}
+
+
+				var trStringStart = '<tr>';
+				var tdString1 = '<td>'+checkboxThanhToan+'</td>';//checkbox
+				var tdString2 = '<td>'+inputDate+'</td>';//ngay nhap hang
+				var tdString3 = '<td>'+publisher_name+'</td>';//nha cung cap
+				var tdString4 = '<td>'+Omss.numberFormat(total)+'</td>';//thanh tien
+				var tdString5 = '<td>'+date_paid+'</td>';//ngay thanh toan
+				var tdString6 = '<td>'+statusString+'</td>';//status
+				var trStringEnd = '</tr>';
+
+				var fullRowString = trStringStart + tdString1 + tdString2 + tdString3 + tdString4 + tdString5 + tdString6 + trStringEnd;
+				console.log(total);
+				tableBody.append(fullRowString);
+			});
+		} else {
+			Omss.showError(data.message);
+		}
+	});
 }
