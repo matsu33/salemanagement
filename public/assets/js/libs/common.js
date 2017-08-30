@@ -613,3 +613,11 @@ function viewOrderDetail(orderId){
 		}
 	});
 }
+
+function getFormattedDate(dateString) {
+	var todayTime = new Date(dateString);
+	var month = todayTime .getMonth() + 1;
+	var day = todayTime .getDate();
+	var year = todayTime .getFullYear();
+	return day + "/" + month + "/" + year;
+}

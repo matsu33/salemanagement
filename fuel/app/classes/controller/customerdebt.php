@@ -217,11 +217,13 @@ class Controller_Customerdebt extends Controller_Base
 			$querySelect->where("orderdetails.order_id", "=", $order_id);
 			
 			$data = $querySelect->execute()->as_array();
-	
+
+			$lastQuery = DB::last_query();
+
 			if (count($data) <= 0) {
 				return array(
 						'status' => false,
-						'message' => 'Không tìm thấy đơn hàng nào!'
+						'message' => 'Không tìm thấy đơn hàng nào! Order ID : '.$order_id.' - Query : '.$lastQuery
 				);
 			}
 	
