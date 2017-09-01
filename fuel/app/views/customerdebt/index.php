@@ -296,7 +296,7 @@
 			<button type="submit" class="btn btn-default col-md-push-1 col-sm-2 col-xs-12 margin_bottom_10px js-reset-search">
 				<span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;&nbsp;Xóa điều kiện lọc
 			</button>
-			<button type="submit" onclick="clickThanhToanCongNo();"
+			<button type="submit" onclick="paidListOrder();"
 					class="btn btn-primary col-md-push-2 col-sm-2 col-xs-12 margin_bottom_10px">
 				<span class="glyphicon glyphicon-saved"></span>&nbsp;&nbsp;&nbsp;&nbsp;Thanh toán
 			</button>
@@ -312,30 +312,8 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-12 congno_ngay">
-			<table class="table table-condensed table-hover table-striped"
-				style="">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Ngày bán hàng</th>
-						<th >Khách hàng</th>
-						<th >Số hóa đơn đã thanh toán</th>
-						<th >Số tiền đã thanh toán</th>
-						<th >Số hóa đơn chưa thanh toán</th>
-						<th >Công nợ</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					
-				</tbody>
-			</table>
-			
-			<br>
-		</div>
 		<div class="col-md-12">
-			<table class="table table-condensed table-hover table-striped"
+			<table class="table table-condensed table-hover table-striped js-table-list-order"
 				style="">
 				<thead>
 					<tr>
@@ -375,7 +353,7 @@
 
 						$link = '<button class="btn btn-inverse btn-primary js-view-list-order" data-listorderid="'.$listOrderId.'">Xem chi tiết</button>';
 
-						$checkbox = '<input type="checkbox" value="'.$customer_id.'">';
+						$checkbox = '<input type="checkbox" value="'.$customer_id.'" data-listorderid="'.$listOrderId.'" >';
 
 						$tr_class = "odd";
 						if($count%2 == 0){
@@ -404,26 +382,7 @@
 			
 			<br>
 		</div>
-		<div class="col-md-12 congno_nam">
-			<table class="table table-condensed table-hover table-striped"
-				style="">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th >Tháng bán hàng</th>
-						<th >Số hóa đơn đã thanh toán</th>
-						<th >Số tiền đã thanh toán</th>
-						<th >Số hóa đơn chưa thanh toán</th>
-						<th >Công nợ</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-			
-			<br>
-		</div>
+		<div class="pagination"><?php echo html_entity_decode($pagination); ?></div>
 	</div>
 </div>
 

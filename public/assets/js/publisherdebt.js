@@ -831,3 +831,15 @@ function viewListOrder(listOrderId){
 		}
 	});
 }
+
+function paidListOrder(){
+	listPaidOrderId = [];
+	$('.js-table-list-order input:checkbox:checked').each(function () {
+		var listOrderId = $(this).data('listorderid').toString().split(',');
+		listPaidOrderId = listPaidOrderId.concat(listOrderId);
+	});
+
+	console.log('listPaidOrderId : ');
+	console.log(listPaidOrderId);
+	paidWithOrderListId();
+}

@@ -146,7 +146,11 @@ $(document).ready(function(){
 	$(".js-reset-search").click(function(){
 		resetSearch();
 	});
-    
+
+	$('.js-view-list-order').click(function(){
+		var listOrderId = $(this).data('listorderid');
+		viewListOrder(listOrderId);
+	});
 	// $(".congno_xemngay_btn").click(function(){
 	// 	$('#choncachxem_modal').modal('hide');
 	// 	$(".congno_ngay").show();
@@ -600,16 +604,17 @@ function paidOrderDateInPopupDetail(){
 function paidWithOrderListId(){
 	if(listPaidOrderId.length > 0){
 		var data = {};
-		
+
 		var dataPost = {
-		        'dataPost': JSON.stringify({'data' : listPaidOrderId})
-		    };
+			'dataPost': JSON.stringify({'data' : listPaidOrderId})
+		};
 
 		Omss.post('/publisherdebt/paid', dataPost).done(function(data) {
 			console.log(data);
 			if (data.status == 1) {
-				excuteSearch();
-				$("#danhsachhoadon_ngay_modal").modal("hide");
+				// excuteSearch();
+				// $("#danhsachhoadon_ngay_modal").modal("hide");
+				location.reload();
 			} else {
 				Omss.showError(data.message);
 			}
@@ -883,4 +888,73 @@ function startSearch(){
 
 function resetSearch(){
 	window.location = '/no_khach_hang';
+}
+
+function viewListOrder(listOrderId){
+	console.log(listOrderId);
+	var dataPost = {
+		'listOrderId': listOrderId
+	};
+
+	Omss.post('/customerdebt/getlistorder', dataPost).done(function(data) {
+		console.log(data);
+		if (data.status == 1) {
+			// excuteSearch();
+			$("#danhsachhoadon_ngay_modal").modal("show");
+			var tableBody = $("#danhsachhoadon_ngay_modal .modal-body table tbody");
+			tableBody.html('');
+			$.each( data.data, function(key, item){
+				var dateCreate = item['create_at'];
+				var createFullDate = new Date(dateCreate);
+				var createdDate = createFullDate.getDate();
+				var createdMonth = createFullDate.getMonth() + 1;
+				var createdYear = createFullDate.getFullYear();
+				var inputDate = createdDate + '/' + createdMonth + '/' + createdYear;
+
+				var total = item['total'];
+				var customer_name = item['customer_name'];
+				var date_paid = '';
+				var status = item['status'];
+				var orderId = item['id'];
+				statusString = '';
+				var checkboxThanhToan = '';
+
+				if(status == 1){
+					statusString = 'Đã thanh toán';
+					date_paid = getFormattedDate(item['date_paid']);
+				}else{
+					checkboxThanhToan = '<input type="checkbox" value="'+orderId+'">';
+					statusString = '<a onclick="viewOrderDetail('+orderId+')" class="btn btn-inverse btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Xem chi tiết</a>';
+				}
+
+
+				var trStringStart = '<tr>';
+				var tdString1 = '<td>'+checkboxThanhToan+'</td>';//checkbox
+				var tdString2 = '<td>'+inputDate+'</td>';//ngay nhap hang
+				var tdString3 = '<td>'+customer_name+'</td>';//nha cung cap
+				var tdString4 = '<td>'+Omss.numberFormat(total)+'</td>';//thanh tien
+				var tdString5 = '<td>'+date_paid+'</td>';//ngay thanh toan
+				var tdString6 = '<td>'+statusString+'</td>';//status
+				var trStringEnd = '</tr>';
+
+				var fullRowString = trStringStart + tdString1 + tdString2 + tdString3 + tdString4 + tdString5 + tdString6 + trStringEnd;
+				console.log(total);
+				tableBody.append(fullRowString);
+			});
+		} else {
+			Omss.showError(data.message);
+		}
+	});
+}
+
+function paidListOrder(){
+	listPaidOrderId = [];
+	$('.js-table-list-order input:checkbox:checked').each(function () {
+		var listOrderId = $(this).data('listorderid').toString().split(',');
+		listPaidOrderId = listPaidOrderId.concat(listOrderId);
+	});
+
+	console.log('listPaidOrderId : ');
+	console.log(listPaidOrderId);
+	paidWithOrderListId();
 }

@@ -347,7 +347,7 @@ class Controller_Publisherdebt extends Controller_Base
 				"orders.user_id")->from('orders');
 			$querySelect->join('publishers','left')->on('orders.publisher_id', '=', 'publishers.id');
 // 			$querySelect->join('customers','left')->on('orders.customer_id', '=', 'customers.id');
-			$querySelect->where('orders.order_type', '=', 1);
+//			$querySelect->where('orders.order_type', '=', 1);
 // 			$querySelect->where('orders.status', '=', 1);
 //			$querySelect->where('orders.create_at', '>=', $date_from);
 //			$querySelect->where('orders.create_at', '<=', $date_to);
