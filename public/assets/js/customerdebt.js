@@ -80,81 +80,109 @@ $(document).ready(function(){
 	$(".congno_ngay, .congno_thang, .congno_nam").hide();
 	
 //	datatableOrderList = Omss.dataTable($(".congno_ngay table"), columnsListDate);
-	datatableOrderListDateDetail = Omss.dataTable($("#danhsachhoadon_ngay_modal table"), columnsListDateDetail);
+// 	datatableOrderListDateDetail = Omss.dataTable($("#danhsachhoadon_ngay_modal table"), columnsListDateDetail);
 //	datatableOrderListMonthDetail = Omss.dataTable($("#danhsachhoadon_thang_modal table"), columnsListMonthDetail);
-	datatableOrderListYearDetail = Omss.dataTable($("#danhsachhoadon_nam_modal table"), columnsListYearDetail);
+// 	datatableOrderListYearDetail = Omss.dataTable($("#danhsachhoadon_nam_modal table"), columnsListYearDetail);
 	datatableListPhieuDoiChieuCongNo = Omss.dataTable($("#phieu_doi_chieu_cong_no_modal table"), columnsListPhieuDoiChieuCongNo);
 	
-	Omss.post('/customers/getAll').done(function(data) {
-		console.log(data);
-		if (data.status == 1) {
-			$(".nhacungcap_group_popup").html("");
-//			$(".nhacungcap_group_popup").append('<a onclick="selectPublisher(null,null)" class="btn btn-primary" data-dismiss="modal">Tất cả</a>');
-			$.each( data['data'], function(key, item){
-				var no, category_name, option;
-				no = item['id'];
-				customer_name = item['customer_name'];
-				$(".nhacungcap_group_popup").append('<a onclick="selectPublisher(\''+no+'\',\''+customer_name+'\')" class="btn btn-primary" data-dismiss="modal">'+customer_name+'</a>');
-			});
-			
-			$('#nhacungcap_modal').modal('show');
-		} else {
-			Omss.showError(data.message);
-		}
-	});
-	
-	$('.doanh_thu_ngay_time').datetimepicker({
-        defaultDate: new Date(),
-        pickTime: false,
-        format: "DD/MM/YYYY"
-    });
+// 	Omss.post('/customers/getAll').done(function(data) {
+// 		console.log(data);
+// 		if (data.status == 1) {
+// 			$(".nhacungcap_group_popup").html("");
+// //			$(".nhacungcap_group_popup").append('<a onclick="selectPublisher(null,null)" class="btn btn-primary" data-dismiss="modal">Tất cả</a>');
+// 			$.each( data['data'], function(key, item){
+// 				var no, category_name, option;
+// 				no = item['id'];
+// 				customer_name = item['customer_name'];
+// 				$(".nhacungcap_group_popup").append('<a onclick="selectPublisher(\''+no+'\',\''+customer_name+'\')" class="btn btn-primary" data-dismiss="modal">'+customer_name+'</a>');
+// 			});
+//
+// 			$('#nhacungcap_modal').modal('show');
+// 		} else {
+// 			Omss.showError(data.message);
+// 		}
+// 	});
 
-    $('.doanh_thu_thang_time').datetimepicker({
-        defaultDate: new Date(),
-        pickTime: false,
-        minViewMode: 'months',
-        format: "MM/YYYY"
-    });
+	fillCustomerToSelectElement(".select_customer");
 
-    $('.doanh_thu_nam_time').datetimepicker({
-        defaultDate: new Date(),
-        pickTime: false,
-        minViewMode: 'years',
-        format: "YYYY"
-    });
-    
-	$(".congno_xemngay_btn").click(function(){
-		$('#choncachxem_modal').modal('hide');
-		$(".congno_ngay").show();
-		$(".congno_thang").hide();
-		$(".congno_nam").hide();
-		
-		searchCondition.Type = "1";
-        searchCondition.Value = $('.doanh_thu_ngay_time').find(".input_date").val();
-        excuteSearch();
+	$('.js-date-control').datetimepicker({
+		defaultDate: new Date(),
+		pickTime: false,
+		format: "DD/MM/YYYY"
 	});
-	
-	$(".congno_xemthang_btn").click(function(){
-		$('#choncachxem_modal').modal('hide');
-		$(".congno_ngay").hide();
-		$(".congno_thang").show();
-		$(".congno_nam").hide();
-		
-		searchCondition.Type = "2";
-        searchCondition.Value = $('.doanh_thu_thang_time').find(".input_date").val();
-        excuteSearch();
+	var selectedSearchDay = $('.selected-search-day').val();
+	if(selectedSearchDay != '') {
+		$('.js-input-date').val(selectedSearchDay);
+	}
+
+	$('.js-month-control').datetimepicker({
+		defaultDate: new Date(),
+		pickTime: false,
+		minViewMode: 'months',
+		format: "MM/YYYY"
 	});
-	
-	$(".congno_xemnam_btn").click(function(){
-		$('#choncachxem_modal').modal('hide');
-		$(".congno_ngay").hide();
-		$(".congno_thang").hide();
-		$(".congno_nam").show();
-		
-		searchCondition.Type = "3";
-        searchCondition.Value = $('.doanh_thu_nam_time').find(".input_date").val();
-        excuteSearch();
+	var selectedSearchMonth = $('.selected-search-month').val();
+	if(selectedSearchMonth != '') {
+		$('.js-input-month').val(selectedSearchMonth);
+	}
+
+	$('.js-year-control').datetimepicker({
+		defaultDate: new Date(),
+		pickTime: false,
+		minViewMode: 'years',
+		format: "YYYY"
 	});
+	var selectedSearchYear = $('.selected-search-year').val();
+	if(selectedSearchYear != '') {
+		$('.js-input-year').val(selectedSearchYear);
+	}
+
+	var selectedSearchType = $('.selected-search-type').val();
+	$('.js-radio-date-'+selectedSearchType).prop("checked", true);
+
+	$(".js-start-search").click(function(){
+		startSearch();
+	});
+	$(".js-reset-search").click(function(){
+		resetSearch();
+	});
+
+	$('.js-view-list-order').click(function(){
+		var listOrderId = $(this).data('listorderid');
+		viewListOrder(listOrderId);
+	});
+	// $(".congno_xemngay_btn").click(function(){
+	// 	$('#choncachxem_modal').modal('hide');
+	// 	$(".congno_ngay").show();
+	// 	$(".congno_thang").hide();
+	// 	$(".congno_nam").hide();
+	//
+	// 	searchCondition.Type = "1";
+     //    searchCondition.Value = $('.doanh_thu_ngay_time').find(".input_date").val();
+     //    excuteSearch();
+	// });
+	//
+	// $(".congno_xemthang_btn").click(function(){
+	// 	$('#choncachxem_modal').modal('hide');
+	// 	$(".congno_ngay").hide();
+	// 	$(".congno_thang").show();
+	// 	$(".congno_nam").hide();
+	//
+	// 	searchCondition.Type = "2";
+     //    searchCondition.Value = $('.doanh_thu_thang_time').find(".input_date").val();
+     //    excuteSearch();
+	// });
+	//
+	// $(".congno_xemnam_btn").click(function(){
+	// 	$('#choncachxem_modal').modal('hide');
+	// 	$(".congno_ngay").hide();
+	// 	$(".congno_thang").hide();
+	// 	$(".congno_nam").show();
+	//
+	// 	searchCondition.Type = "3";
+     //    searchCondition.Value = $('.doanh_thu_nam_time').find(".input_date").val();
+     //    excuteSearch();
+	// });
 	
 });
 
@@ -576,16 +604,17 @@ function paidOrderDateInPopupDetail(){
 function paidWithOrderListId(){
 	if(listPaidOrderId.length > 0){
 		var data = {};
-		
+
 		var dataPost = {
-		        'dataPost': JSON.stringify({'data' : listPaidOrderId})
-		    };
+			'dataPost': JSON.stringify({'data' : listPaidOrderId})
+		};
 
 		Omss.post('/publisherdebt/paid', dataPost).done(function(data) {
 			console.log(data);
 			if (data.status == 1) {
-				excuteSearch();
-				$("#danhsachhoadon_ngay_modal").modal("hide");
+				// excuteSearch();
+				// $("#danhsachhoadon_ngay_modal").modal("hide");
+				location.reload();
 			} else {
 				Omss.showError(data.message);
 			}
@@ -682,7 +711,12 @@ function clickThanhToanCongNo(){
  */
 function themVaoPhieuDoiChieuCongNo(){
 	console.log("themVaoPhieuDoiChieuCongNo");
-	if(searchCondition.Type == "1"){
+	listOrderIdPhieuDoiChieuCongNo = $("#danhsachhoadon_ngay_modal table input:checkbox:checked").map(function() {
+		return $(this).val();
+	}).get(); // <----
+
+
+	/*if(searchCondition.Type == "1"){
 		//ngày
 		listOrderIdPhieuDoiChieuCongNo = $("#danhsachhoadon_ngay_modal table input:checkbox:checked").map(function() {
 	        return $(this).val();
@@ -715,7 +749,7 @@ function themVaoPhieuDoiChieuCongNo(){
 				listOrderIdPhieuDoiChieuCongNo.push(orderId);
 			}
 		});
-	}
+	}*/
 	if(listOrderIdPhieuDoiChieuCongNo.length > 0){
 		Omss.showError('Đã thêm vào danh sách');
 	}
@@ -730,10 +764,51 @@ function viewPhieuDoiChieuCongNo(){
 	excelDataPhieuDoiChieuCongNo = [];
 	
 	console.log("viewPhieuDoiChieuCongNo");
+
 	datatableListPhieuDoiChieuCongNo.fnClearTable(0);
+	$('#phieu_doi_chieu_cong_no_modal').modal('hide');
+	if (listOrderIdPhieuDoiChieuCongNo.length <= 0) {
+		Omss.showError('Chưa có hóa đơn nào');
+		return false;
+	}else{
+		var dataPost = {
+			'listOrderId': listOrderIdPhieuDoiChieuCongNo.toString()
+		};
+		Omss.post('/customerdebt/getlistorder', dataPost).done(function(data) {
+
+			if (data.status == 1) {
+				$('#phieu_doi_chieu_cong_no_modal').modal('show');
+				for(var i = 0; i < listOrderIdPhieuDoiChieuCongNo.length; i++) {
+					var orderId = listOrderIdPhieuDoiChieuCongNo[i];
+					var order = _.where(data.data, {id: orderId + ""})[0];
+					if(order){
+						var debt = order['debt'];
+
+						var dateCreate = order['create_at'];
+						var createFullDate = new Date(dateCreate);
+						var createdDate = createFullDate.getDate();
+						var createdMonth = createFullDate.getMonth();
+						var createdYear = createFullDate.getFullYear();
+
+						var linkThanhToan = '<a onclick="removeOrderOutOfPhieuDoiChieuCongNo('+orderId+')" class="btn btn-inverse btn-primary" ><span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;Xóa</a>';
+						var row = ["", createdDate + "/" + (createdMonth + 1) + "/" + createdYear, "",  Omss.numberFormat(debt), linkThanhToan];
+
+						datatableListPhieuDoiChieuCongNo.fnAddData(row, true);
+						order['date'] =  createdDate + "/" + (createdMonth + 1) + "/" + createdYear;
+						excelDataPhieuDoiChieuCongNo.push(order);
+
+					}
+				}
+				datatableListPhieuDoiChieuCongNo.fnDraw();
+			} else {
+				Omss.showError(data.message);
+			}
+		});
+	}
+	/*datatableListPhieuDoiChieuCongNo.fnClearTable(0);
 	for(var i = 0; i < listOrderIdPhieuDoiChieuCongNo.length; i++){
 		var orderId = listOrderIdPhieuDoiChieuCongNo[i];
-		
+		console.log('orderId : '+orderId);
 		//TODO: get order by id
 		var order = null;
 
@@ -757,7 +832,7 @@ function viewPhieuDoiChieuCongNo(){
 		}
 		
 	}
-	datatableListPhieuDoiChieuCongNo.fnDraw();
+	datatableListPhieuDoiChieuCongNo.fnDraw();*/
 	
 	
 }
@@ -821,4 +896,111 @@ function bindOrderDetailWithData(data){
 		}
 	);
 	dataTableOrderDetail.fnDraw();
+}
+
+function startSearch(){
+	var isCheckcustomer = $('.js-checkbox-select-search-customer').is( ":checked" );
+	var searchType = $('input[name="js-select-search-type"]:checked').val();
+	var searchDate = $('.js-input-date-' + searchType).val();
+	var dateCondition = getFromToDate(searchType, searchDate);
+	var searchDay = $('.js-input-date').val();
+	var searchMonth = $('.js-input-month').val();
+	var searchYear = $('.js-input-year').val();
+	console.log('searchType :' +searchType);
+	console.log('searchDate :');
+	console.log(searchDate);
+	// console.log('dateCondition :');
+	// console.log(encodeURI(dateCondition.date_from));
+	// console.log(encodeURI(dateCondition.date_to));
+
+	var searchcustomerQuery = '';
+	var searchTypeQuery = '&search_type=' + searchType;
+	var searchDateQuery = '&search_date=' + searchDate;
+	var searchDayQuery = '&search_day=' + searchDay;
+	var searchMonthQuery = '&search_month=' + searchMonth;
+	var searchYearQuery = '&search_year=' + searchYear;
+
+	if(isCheckcustomer){
+		searchcustomerQuery = '&customer_id=' + parseInt($(".js-select-customer-indebt" ).val());
+	}
+	// console.log('?page=1' + searchcustomerQuery + searchTypeQuery + searchDateQuery + searchDayQuery + searchMonthQuery + searchYearQuery);
+	// return false;
+	window.location = '?page=1' + searchcustomerQuery + searchTypeQuery + searchDateQuery + searchDayQuery + searchMonthQuery + searchYearQuery;
+
+
+
+	return false;
+}
+
+function resetSearch(){
+	window.location = '/no_khach_hang';
+}
+
+function viewListOrder(listOrderId){
+	console.log(listOrderId);
+	var dataPost = {
+		'listOrderId': listOrderId
+	};
+
+	Omss.post('/customerdebt/getlistorder', dataPost).done(function(data) {
+		console.log(data);
+		if (data.status == 1) {
+			// excuteSearch();
+			$("#danhsachhoadon_ngay_modal").modal("show");
+			var tableBody = $("#danhsachhoadon_ngay_modal .modal-body table tbody");
+			tableBody.html('');
+			$.each( data.data, function(key, item){
+				var dateCreate = item['create_at'];
+				var createFullDate = new Date(dateCreate);
+				var createdDate = createFullDate.getDate();
+				var createdMonth = createFullDate.getMonth() + 1;
+				var createdYear = createFullDate.getFullYear();
+				var inputDate = createdDate + '/' + createdMonth + '/' + createdYear;
+
+				var total = item['total'];
+				var customer_name = item['customer_name'];
+				var date_paid = '';
+				var status = item['status'];
+				var orderId = item['id'];
+				statusString = '';
+				var checkboxThanhToan = '';
+
+				if(status == 1){
+					statusString = 'Đã thanh toán';
+					date_paid = getFormattedDate(item['date_paid']);
+				}else{
+					checkboxThanhToan = '<input type="checkbox" value="'+orderId+'">';
+					statusString = '<a onclick="viewOrderDetail('+orderId+')" class="btn btn-inverse btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Xem chi tiết</a>';
+				}
+
+
+				var trStringStart = '<tr>';
+				var tdString1 = '<td>'+checkboxThanhToan+'</td>';//checkbox
+				var tdString2 = '<td>'+inputDate+'</td>';//ngay nhap hang
+				var tdString3 = '<td>'+customer_name+'</td>';//nha cung cap
+				var tdString4 = '<td>'+Omss.numberFormat(total)+'</td>';//thanh tien
+				var tdString5 = '<td>'+date_paid+'</td>';//ngay thanh toan
+				var tdString6 = '<td>'+statusString+'</td>';//status
+				var trStringEnd = '</tr>';
+
+				var fullRowString = trStringStart + tdString1 + tdString2 + tdString3 + tdString4 + tdString5 + tdString6 + trStringEnd;
+				console.log(total);
+				tableBody.append(fullRowString);
+			});
+		} else {
+			Omss.showError(data.message);
+		}
+	});
+}
+
+function paidListOrder(){
+	listPaidOrderId = [];
+	$('.js-table-list-order input:checkbox:checked').each(function () {
+		var listOrderId = $(this).data('listorderid').toString().split(',');
+		listPaidOrderId = listPaidOrderId.concat(listOrderId);
+	});
+
+	console.log('listPaidOrderId : ');
+	console.log(listPaidOrderId);
+	paidWithOrderListId();
 }

@@ -81,27 +81,27 @@ $(document).ready(function(){
 //	datatableOrderListMonthDetail = Omss.dataTable($("#danhsachhoadon_thang_modal table"), columnsListMonthDetail);
 // 	datatableOrderListYearDetail = Omss.dataTable($("#danhsachhoadon_nam_modal table"), columnsListYearDetail);
 	
-	Omss.post('/nhacungcap/getAll').done(function(data) {
-		console.log(data);
-		if (data.status == 1) {
-			$(".nhacungcap_group_popup").html("");
-//			$(".nhacungcap_group_popup").append('<a onclick="selectPublisher(null,null)" class="btn btn-primary" data-dismiss="modal">Tất cả</a>');
-			$.each( data['data'], function(key, item){
-				var no, category_name, option;
-				no = item['id'];
-				publisher_name = item['publisher_name'];
-				$(".nhacungcap_group_popup").append('<a onclick="selectPublisher(\''+no+'\',\''+publisher_name+'\')" class="btn btn-primary" data-dismiss="modal">'+publisher_name+'</a>');
-			});
-			// if(publisherId){
-			// 	selectPublisher(publisherId, publisherName)
-			// }else{
-			// 	$('#nhacungcap_modal').modal('show');
-			// }
-
-		} else {
-			Omss.showError(data.message);
-		}
-	});
+// 	Omss.post('/nhacungcap/getAll').done(function(data) {
+// 		console.log(data);
+// 		if (data.status == 1) {
+// 			$(".nhacungcap_group_popup").html("");
+// //			$(".nhacungcap_group_popup").append('<a onclick="selectPublisher(null,null)" class="btn btn-primary" data-dismiss="modal">Tất cả</a>');
+// 			$.each( data['data'], function(key, item){
+// 				var no, category_name, option;
+// 				no = item['id'];
+// 				publisher_name = item['publisher_name'];
+// 				$(".nhacungcap_group_popup").append('<a onclick="selectPublisher(\''+no+'\',\''+publisher_name+'\')" class="btn btn-primary" data-dismiss="modal">'+publisher_name+'</a>');
+// 			});
+// 			// if(publisherId){
+// 			// 	selectPublisher(publisherId, publisherName)
+// 			// }else{
+// 			// 	$('#nhacungcap_modal').modal('show');
+// 			// }
+//
+// 		} else {
+// 			Omss.showError(data.message);
+// 		}
+// 	});
 	
 	$('.js-date-control').datetimepicker({
         defaultDate: new Date(),
@@ -830,4 +830,16 @@ function viewListOrder(listOrderId){
 			Omss.showError(data.message);
 		}
 	});
+}
+
+function paidListOrder(){
+	listPaidOrderId = [];
+	$('.js-table-list-order input:checkbox:checked').each(function () {
+		var listOrderId = $(this).data('listorderid').toString().split(',');
+		listPaidOrderId = listPaidOrderId.concat(listOrderId);
+	});
+
+	console.log('listPaidOrderId : ');
+	console.log(listPaidOrderId);
+	paidWithOrderListId();
 }
