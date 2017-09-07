@@ -179,6 +179,13 @@ function fillCustomerToSelectElement(element){
 				option = '<option value="'+no+'">'+category_name+'</option>';
 				$(element).append(option);
 			});
+			var selectedCustomer = $('.selected-customer').val();
+			if(selectedCustomer){
+				$('.select_customer').val(selectedCustomer);
+				$(".js-checkbox-select-search-customer").prop("checked", true);
+			}else{
+				$(".js-checkbox-select-search-customer").prop("checked", false);
+			}
 		} else {
 			Omss.showError(data.message);
 		}
