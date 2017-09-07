@@ -711,7 +711,12 @@ function clickThanhToanCongNo(){
  */
 function themVaoPhieuDoiChieuCongNo(){
 	console.log("themVaoPhieuDoiChieuCongNo");
-	if(searchCondition.Type == "1"){
+	listOrderIdPhieuDoiChieuCongNo = $("#danhsachhoadon_ngay_modal table input:checkbox:checked").map(function() {
+		return $(this).val();
+	}).get(); // <----
+
+
+	/*if(searchCondition.Type == "1"){
 		//ngày
 		listOrderIdPhieuDoiChieuCongNo = $("#danhsachhoadon_ngay_modal table input:checkbox:checked").map(function() {
 	        return $(this).val();
@@ -744,7 +749,7 @@ function themVaoPhieuDoiChieuCongNo(){
 				listOrderIdPhieuDoiChieuCongNo.push(orderId);
 			}
 		});
-	}
+	}*/
 	if(listOrderIdPhieuDoiChieuCongNo.length > 0){
 		Omss.showError('Đã thêm vào danh sách');
 	}
@@ -759,10 +764,51 @@ function viewPhieuDoiChieuCongNo(){
 	excelDataPhieuDoiChieuCongNo = [];
 	
 	console.log("viewPhieuDoiChieuCongNo");
+
 	datatableListPhieuDoiChieuCongNo.fnClearTable(0);
+	$('#phieu_doi_chieu_cong_no_modal').modal('hide');
+	if (listOrderIdPhieuDoiChieuCongNo.length <= 0) {
+		Omss.showError('Chưa có hóa đơn nào');
+		return false;
+	}else{
+		var dataPost = {
+			'listOrderId': listOrderIdPhieuDoiChieuCongNo.toString()
+		};
+		Omss.post('/customerdebt/getlistorder', dataPost).done(function(data) {
+
+			if (data.status == 1) {
+				$('#phieu_doi_chieu_cong_no_modal').modal('show');
+				for(var i = 0; i < listOrderIdPhieuDoiChieuCongNo.length; i++) {
+					var orderId = listOrderIdPhieuDoiChieuCongNo[i];
+					var order = _.where(data.data, {id: orderId + ""})[0];
+					if(order){
+						var debt = order['debt'];
+
+						var dateCreate = order['create_at'];
+						var createFullDate = new Date(dateCreate);
+						var createdDate = createFullDate.getDate();
+						var createdMonth = createFullDate.getMonth();
+						var createdYear = createFullDate.getFullYear();
+
+						var linkThanhToan = '<a onclick="removeOrderOutOfPhieuDoiChieuCongNo('+orderId+')" class="btn btn-inverse btn-primary" ><span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;Xóa</a>';
+						var row = ["", createdDate + "/" + (createdMonth + 1) + "/" + createdYear, "",  Omss.numberFormat(debt), linkThanhToan];
+
+						datatableListPhieuDoiChieuCongNo.fnAddData(row, true);
+						order['date'] =  createdDate + "/" + (createdMonth + 1) + "/" + createdYear;
+						excelDataPhieuDoiChieuCongNo.push(order);
+
+					}
+				}
+				datatableListPhieuDoiChieuCongNo.fnDraw();
+			} else {
+				Omss.showError(data.message);
+			}
+		});
+	}
+	/*datatableListPhieuDoiChieuCongNo.fnClearTable(0);
 	for(var i = 0; i < listOrderIdPhieuDoiChieuCongNo.length; i++){
 		var orderId = listOrderIdPhieuDoiChieuCongNo[i];
-		
+		console.log('orderId : '+orderId);
 		//TODO: get order by id
 		var order = null;
 
@@ -786,7 +832,7 @@ function viewPhieuDoiChieuCongNo(){
 		}
 		
 	}
-	datatableListPhieuDoiChieuCongNo.fnDraw();
+	datatableListPhieuDoiChieuCongNo.fnDraw();*/
 	
 	
 }

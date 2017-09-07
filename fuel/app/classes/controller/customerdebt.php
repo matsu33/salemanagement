@@ -138,9 +138,9 @@ class Controller_Customerdebt extends Controller_Base
 		$data ['list_debt'] = $querySelect->order_by ( 'orders.create_at', 'desc' )->limit ( $pagination->per_page )->offset ( $paginationOffset )->execute ()->as_array ();
 //		$data ['list_debt'] = $querySelect->order_by ( 'orders.create_at', 'desc' )->execute ()->as_array ();
 
-		var_dump('<pre>');
-		var_dump(DB::last_query());
-		var_dump('</pre>');
+//		var_dump('<pre>');
+//		var_dump(DB::last_query());
+//		var_dump('</pre>');
 ////
 //		var_dump('<pre>');
 //		var_dump($data ['list_debt']);
