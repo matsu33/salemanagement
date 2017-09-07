@@ -41,26 +41,28 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-12">
+		<div class="row col-md-12">
 			<a data-toggle="modal"
 						data-target="#insert_order_modal"
 				class="btn btn-primary col-md-2 col-sm-3 col-md-push-1 col-sm-push-0 col-xs-12 margin_bottom_10px"
 				>
 				<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;&nbsp;Thêm hàng hóa
 			</a>
-			<a class="btn_save_new_order btn btn-warning col-md-2 col-md-push-2 col-sm-3 col-sm-push-0 col-xs-12 margin_bottom_10px">
+			<a class="btn_save_new_order btn btn-warning col-md-push-2 col-md-2 col-sm-3 col-sm-push-0 col-xs-12 margin_bottom_10px">
 				<span class="glyphicon glyphicon-floppy-saved"></span>&nbsp;&nbsp;&nbsp;&nbsp;Lưu
 				dữ liệu
 			</a>
-			<a class="btn_save_new_order2 btn btn-success col-md-2 col-md-push-3 col-sm-3 col-sm-push-0 col-xs-12 margin_bottom_10px">
+			<a class="btn_save_new_order2 btn btn-success col-md-push-3 col-md-2 col-sm-3 col-sm-push-0 col-xs-12 margin_bottom_10px">
 				<span class="glyphicon glyphicon-print"></span>&nbsp;&nbsp;&nbsp;&nbsp;Thanh toán
 			</a>
-			<!-- <a
-				class="btn btn-default col-md-2 col-md-push-4 col-sm-3 col-sm-push-0 col-xs-12 margin_bottom_10px"
-				 href="congno.htm"> <span
-				class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;&nbsp;Xem
-				công nợ
-			</a> -->
+		</div>
+		<div class="row col-md-12">
+			<a class="btn btn-success col-md-2 col-sm-3 col-md-push-1 col-sm-push-0 col-xs-12 margin_bottom_10px" href="/tao_bang_bao_gia">
+				<span class="glyphicon glyphicon-print"></span>&nbsp;&nbsp;&nbsp;&nbsp;Tạo bảng báo giá
+			</a>
+			<a class="js-customer-link btn btn-success col-md-push-2 col-md-2 col-sm-3 col-sm-push-0 col-xs-12 margin_bottom_10px">
+				<span class="glyphicon glyphicon-print"></span>&nbsp;&nbsp;&nbsp;&nbsp;Công nợ
+			</a>
 		</div>
 	</div>
 	

@@ -113,6 +113,12 @@ $(document).ready(function() {
     //click btn_save_new_order
     $(".btn_save_new_order").click(function(){setPaid(0);});
     $(".btn_save_new_order2").click(function(){setPaid(1);});
+	$(".js-customer-link").click(function(){
+	    var selectedCustomer = $('.select_customer').val();
+	    console.log('selectedCustomer : ' + selectedCustomer);
+	    window.location = '/no_khach_hang?page=1&customer_id='+selectedCustomer+'&search_type=3';
+	});
+
     //click btn_check_instock
     $(".btn_check_instock").click(clickCheckInstock);
     
