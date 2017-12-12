@@ -287,3 +287,24 @@
 		<div class="pagination"><?php echo html_entity_decode($pagination); ?></div>
 	</div>
 </div>
+<div class="modal fade modal-edit-date">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Chọn ngày</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<div class="input-group date col-sm-8 edit-date-group-control">
+						<input type="text" name="edit-date" class="form-control input-sm input_date" size="10" readonly="">
+						<span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+				<button type="button" class="btn btn-primary" onclick="updateOrderDetailDate()">Cập nhật</button>
+			</div>
+		</div>
+	</div>
+</div>

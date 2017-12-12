@@ -9,6 +9,7 @@
 class Constant
 {
     const ORDER_TYPE_BUY = 1;
+	const ORDER_TYPE_SALE = 2;
     const ORDER_TYPE_WHOLESALE = 2;
     const ORDER_TYPE_RETAIL = 2;
     const ORDER_TYPE_INVENTORY = 3;

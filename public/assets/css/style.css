@@ -246,3 +246,7 @@ body.modal-open, .modal-open .navbar-fixed-top, .modal-open .navbar-fixed-bottom
 #kiemkho_modal .modal-body {
     float: left;
 }
+
+.mr-10 {
+	margin-right: 10px;
+}

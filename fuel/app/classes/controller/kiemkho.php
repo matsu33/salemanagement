@@ -190,14 +190,15 @@ class Controller_Kiemkho extends Controller_Base {
 		if (Input::method () == 'POST') {
 			$pid = Input::param ( 'pid' );
 			
-			$querySelect = DB::select ( "orderdetails.id", "orderdetails.product_id", "unit_instock", "category_id", "category_name", "material_id", "material_name", "product_group", "size_id", "diameter", "length", "product_range", "unit_id", "unit_name", "image", "order_type", "orderdetails.update_at", "old_instock", "new_instock", "quanlity" )
+			$querySelect = DB::select ( "orderdetails.id", "orderdetails.order_id", "orderdetails.product_id", "unit_instock", "category_id", "category_name", "material_id", "material_name", "product_group", "size_id", "diameter", "length", "product_range", "unit_id", "unit_name", "image", "order_type", "orderdetails.update_at", "old_instock", "new_instock", "quanlity" )
 			->from ( "orderdetails" )->join ( 'products', 'LEFT' )->on ( 'products.id', '=', 'orderdetails.product_id' )
 			->join ( 'categories', 'LEFT' )->on ( 'products.category_id', '=', 'categories.id' )
 			->join ( 'materials', 'LEFT' )->on ( 'products.material_id', '=', 'materials.id' )
 			->join ( 'sizes', 'LEFT' )->on ( 'products.size_id', '=', 'sizes.id' )
 			->join ( 'units', 'LEFT' )->on ( 'products.unit_id', '=', 'units.id' )
 			->where ( 'orderdetails.product_id', $pid )
-			->order_by('orderdetails.id', 'DESC');
+				->order_by('orderdetails.update_at','DESC');
+			//->order_by('orderdetails.id', 'DESC');
 			
 			$data = $querySelect->execute ()->as_array ();
 			
@@ -288,7 +289,7 @@ class Controller_Kiemkho extends Controller_Base {
 	 * @return multitype:boolean string |multitype:boolean unknown |NULL
 	 */
 	public function action_getPriceOfProduct() {
-		$data = null;
+		$data = array();
 		if (Input::method () == 'POST') {
 			$pid = Input::param ( 'pid' );
 				
@@ -315,4 +316,205 @@ class Controller_Kiemkho extends Controller_Base {
 	
 		return $data;
 	}
+
+	/**
+	 * update new instock of product
+	 * @return multitype:boolean string
+	 */
+	public function action_updateOrderDetailDate()
+	{
+		$result = null;
+		$status = true;
+		$message = '';
+
+		try{
+			//check method is post or get
+			if (Input::method() == 'POST'){
+				$orderDetailId = Input::param('orderdetailid');
+				$productid = Input::param('productid');
+				$newDate   = Input::param('newdate');
+				$orderid   = Input::param('orderid');
+				$updateall = Input::param('updateall');
+
+//				$updateDate = date($newDate);
+				$updateDate     = str_replace('/', '-', $newDate);
+				$updateDate = date('Y-m-d', strtotime($updateDate));
+
+				//Start transaction update old, new instock
+				if($updateall === 'true' || $updateall === true){
+					//START update date of order
+					$query = DB::update("orderdetails");
+					//set data
+					$query->set(array(
+						'update_at' => $updateDate
+					));
+					$query->where('order_id', $orderid);
+					//excute
+					$query->execute();
+					//END update date of order
+
+					//get list product id of order
+					$listProductId = $this->getListProductIdOfOrder($orderid);
+
+					//loop all product
+					for($i = 0; $i < count($listProductId) - 1; $i++){
+						$productId = $listProductId[$i];
+
+						//get all order detail of product
+						$listOrderDetail = $this->getListOrderDetailOfProduct($productId);
+
+						$oldStockTemp = 0;
+						//loop all order detail
+						for($j = 0; $j < count($listOrderDetail); $j++){
+							$orderDetailTemp = $listOrderDetail[$j];
+							$orderDetailIdTemp = $orderDetailTemp['id'];
+							$orderType = $orderDetailTemp['order_type'];
+							$quanlity = (int)$orderDetailTemp['quanlity'];
+							$oldInstock = (int)$orderDetailTemp['old_instock'];
+							$newInstock = (int)$orderDetailTemp['new_instock'];
+
+							if($j > 0){
+								$oldInstock = $oldStockTemp;
+							}
+
+							if($orderType == Constant::ORDER_TYPE_SALE){
+								$newInstock = $oldInstock - $quanlity;
+							}elseif($orderType == Constant::ORDER_TYPE_BUY){
+								$newInstock = $oldInstock + $quanlity;
+							}elseif($orderType == Constant::ORDER_TYPE_INVENTORY){
+								$oldInstock = $oldStockTemp;
+							}
+							$oldStockTemp = $newInstock;
+
+							$query = DB::update("orderdetails");
+							//set data
+							$query->set(array(
+								'old_instock' => $oldInstock,
+								'new_instock' => $newInstock
+							));
+
+							$query->where('id', $orderDetailIdTemp);
+							//excute
+							$query->execute();
+
+						}
+					}
+
+				}else{
+					//START update date of order
+					$query = DB::update("orderdetails");
+					//set data
+					$query->set(array(
+						'update_at' => $updateDate
+					));
+					$query->where('id', $orderDetailId);
+					//excute
+					$query->execute();
+					//END update date of order
+
+					//get all order detail of product
+					$listOrderDetail = $this->getListOrderDetailOfProduct($productid);
+
+					$oldStockTemp = 0;
+					//loop all order detail
+					for($j = 0; $j < count($listOrderDetail); $j++){
+						$orderDetailTemp = $listOrderDetail[$j];
+						$orderDetailIdTemp = $orderDetailTemp['id'];
+						$orderType = $orderDetailTemp['order_type'];
+						$quanlity = (int)$orderDetailTemp['quanlity'];
+						$oldInstock = (int)$orderDetailTemp['old_instock'];
+						$newInstock = (int)$orderDetailTemp['new_instock'];
+
+						if($j > 0){
+							$oldInstock = $oldStockTemp;
+						}elseif($j == 0){
+							$oldInstock = 0;
+						}
+
+						if($orderType == Constant::ORDER_TYPE_SALE){
+							$newInstock = $oldInstock - $quanlity;
+						}elseif($orderType == Constant::ORDER_TYPE_BUY){
+							$newInstock = $oldInstock + $quanlity;
+						}elseif($orderType == Constant::ORDER_TYPE_INVENTORY){
+							$oldInstock = $oldStockTemp;
+						}
+						$oldStockTemp = $newInstock;
+
+						$query = DB::update("orderdetails");
+						//set data
+						$query->set(array(
+							'old_instock' => $oldInstock,
+							'new_instock' => $newInstock
+						));
+
+						$query->where('id', $orderDetailIdTemp);
+						//excute
+						$query->execute();
+
+					}
+				}
+
+
+
+				//End transaction update old, new instock
+				$message = Lang::get('m_update_success');
+			} else {
+				//invalid method GET
+				$status = false;
+				$message = Lang::get('e_not_valid_method');
+			}
+		}catch (Exception $e){
+			$status = false;
+			$message = Lang::get('e_common_sql');
+		}
+		$result = array('status' => $status, 'message' => $message);
+		return $result;
+	}
+
+	public function action_checkOrderProductNumber() {
+		$data = array();
+		if (Input::method () == 'POST') {
+			$orderid = Input::param ( 'orderid' );
+
+			$data = $this->getListProductIdOfOrder($orderid);
+
+			$countArray = count($data);
+
+			if ($countArray <= 0) {
+				return array (
+					'status' => false,
+					'count' => 0
+				);
+			}
+
+			return array (
+				'status' => true,
+				'count' => $countArray
+			);
+		}
+
+		return $data;
+	}
+
+	public function getListProductIdOfOrder($orderId){
+		$querySelect = DB::select ( "product_id" )
+			->from ( "orderdetails" )
+			->where ( 'order_id', $orderId );
+
+		$data = $querySelect->execute ()->as_array ();
+
+		return $data;
+	}
+
+	public function getListOrderDetailOfProduct($productId){
+		$querySelect = DB::select ()
+			->from ( "orderdetails" )
+			->where ( 'product_id', $productId )
+			->order_by('update_at','ASC');
+
+		$data = $querySelect->execute ()->as_array ();
+
+		return $data;
+	}
+
 }
