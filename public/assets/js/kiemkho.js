@@ -7,7 +7,7 @@ var columnsHistory = [{ "bSearchable": true }, { "bSearchable": true }, { "bSear
                    { "bSearchable": true }, { "bSearchable": false }];
 var selectProductIdToViewHistory = null;
 var selectProductInstockToViewHistory = null;
-
+var editDatePicker = null;
 
 /********************************************************************************
  ****** ON LOAD *****************************************************************
@@ -35,6 +35,11 @@ $(document).ready(function() {
 		window.location = '/kiemkho';
 	});
 
+	editDatePicker = $('.edit-date-group-control').datetimepicker({
+		defaultDate: new Date(),
+		pickTime: false,
+		format: "DD/MM/YYYY"
+	});
 });
 
 function initSearch() {
@@ -122,6 +127,7 @@ function excuteSearch() {
     });
 }
 
+var editingDate = '';
 function viewHistoryOrderDetail(pid){
 	selectProductIdToViewHistory = pid;
 	selectProductInstockToViewHistory = $('.js-product-'+pid).data('instock');
@@ -140,7 +146,9 @@ function viewHistoryOrderDetail(pid){
         	for(var i = 0; i < products.length; i++){
         		//var btnDetail = '<a onclick="viewHistoryOrderDetail('+products[i].product_id+')" class="btn btn-inverse btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Xem chi tiết</a>';
         		var btnDetail = '';
-        		
+        		var orderDetailId = products[i].id;
+				var productId = products[i].product_id;
+				var orderId = products[i].order_id;
         		var dateCreate = products[i]['update_at'];
         		
         		var createFullDate = new Date(dateCreate);
@@ -148,6 +156,10 @@ function viewHistoryOrderDetail(pid){
         		var createdMonth = createFullDate.getMonth();
         		var createdYear = createFullDate.getFullYear();
         		var dateString = createdDate + "/" + (createdMonth + 1) + "/" + createdYear;
+        		//button edit date
+				var buttonEditDate = '<a class="btn btn-inverse btn-primary mr-10" onclick="showModalEditDateOfOrderDetail('+orderDetailId+','+orderId+','+productId+',\''+dateCreate.toString()+'\')" href="#"><i class="fa fa-edit fa-lg"></i></a>';
+				dateString = buttonEditDate + dateString;
+				//END button edit date
         		var orderType = products[i].order_type;
         		var orderTypeString = "Nhập hàng";
         		var orderQualityString = "+";
@@ -235,3 +247,65 @@ function startSearch(){
 
 	return false;
 }
+
+//START - Edit date of order detail
+var editDateOrderDetailId = '';
+var editDateOrderDetailProductId = '';
+var editDateOrderDetailOrderId = '';
+var oldEditDate = '';
+function showModalEditDateOfOrderDetail(orderDetailId, orderId, productId, createFullDate) {
+	editDateOrderDetailId = orderDetailId;
+	editDateOrderDetailProductId = productId;
+	editDateOrderDetailOrderId = orderId;
+	oldEditDate = createFullDate;
+
+	editDatePicker.data("DateTimePicker").setDate(new Date(createFullDate));
+	$('.modal-edit-date').modal('show');
+}
+
+function updateOrderDetailDate() {
+	console.log('updateOrderDetailDate');
+	var newDate = editDatePicker.find(".input_date").val();
+	console.log(newDate);
+
+	//check order has 1 or many product
+	var url = 'kiemkho/checkOrderProductNumber';
+	var dataPost = {
+		'orderid': editDateOrderDetailOrderId
+	};
+
+	var promiseCheckOrderProductNumber = Omss.post(url, dataPost);
+	var willUpdateAll = false;
+	promiseCheckOrderProductNumber.then(function (data) {
+		if(data.status){
+			var countProduct = data.count;
+			if(countProduct > 1){
+				if(confirm('Có '+(countProduct - 1)+' khác chung hóa đơn, bạn có muốn cập nhật luôn không?')){
+					willUpdateAll = true;
+				}
+			}
+		}
+	}).then(function () {
+		console.log('willUpdateAll');
+		console.log(willUpdateAll);
+
+		var url = 'kiemkho/updateOrderDetailDate';
+		var dataPost = {
+			'orderdetailid': editDateOrderDetailId,
+			'productid' : editDateOrderDetailProductId,
+			'newdate' : newDate,
+			'orderid': editDateOrderDetailOrderId,
+			'updateall' : willUpdateAll
+		};
+
+		Omss.post(url, dataPost).done(function(data) {
+			if(data.status){
+				$(".modal-edit-date").modal("hide");
+				location.reload();
+			}else{
+				Omss.showError(data.message);
+			}
+		});
+	});
+}
+//END - Edit date of order detail
