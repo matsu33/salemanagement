@@ -81,7 +81,7 @@ var units = null;
  ********************************************************************************/
 $(document).ready(function(){
 	// datatable = $('#dataTables-example').dataTable();
-	datatable = Omss.dataTable($("#table_unit"), columns);
+//	datatable = Omss.dataTable($("#table_unit"), columns);
 	
 	$('#frm_unit_add').submit(function (evt) {
 		console.log("frm_unit_add submit");
@@ -113,13 +113,15 @@ $(document).ready(function(){
 	});
 
 	//get list Unit data
-	initListUnit();
+//	initListUnit();
 });
 
 /**
  * get list Unit data
  */
 function initListUnit(){
+    location.reload();
+    return false;
 	console.log('getAll');
 	Omss.post('units/getAll').done(function(data) {
 		if (data) {

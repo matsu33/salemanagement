@@ -81,7 +81,7 @@ var categorys = null;
  ********************************************************************************/
 $(document).ready(function(){
 	// datatable = $('#dataTables-example').dataTable();
-	datatable = Omss.dataTable($("#table_category"), columns);
+//	datatable = Omss.dataTable($("#table_category"), columns);
 	
 	$('#frm_category_add').submit(function (evt) {
 		console.log("frm_category_add submit");
@@ -113,13 +113,15 @@ $(document).ready(function(){
 	});
 
 	//get list Category data
-	initListCategory();
+//	initListCategory();
 });
 
 /**
  * get list Category data
  */
 function initListCategory(){
+    location.reload();
+    return false;
 	console.log('getAll');
 	Omss.post('categories/getAll').done(function(data) {
 		if (data) {

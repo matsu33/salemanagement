@@ -84,7 +84,7 @@ var publishers = null;
  ********************************************************************************/
 $(document).ready(function(){
 	// datatable = $('#dataTables-example').dataTable();
-	datatable = Omss.dataTable($("#table_publisher"), columns);
+//	datatable = Omss.dataTable($("#table_publisher"), columns);
 	
 	$('#frm_publisher_add').submit(function (evt) {
 		console.log("frm_publisher_add submit");
@@ -116,13 +116,15 @@ $(document).ready(function(){
 	});
 
 	//get list publisher data
-	initListPublisher();
+//	initListPublisher();
 });
 
 /**
  * get list publisher data
  */
 function initListPublisher(){
+    location.reload();
+    return false;
 	console.log('getAll');
 	Omss.post('nhacungcap/getAll').done(function(data) {
 		if (data) {

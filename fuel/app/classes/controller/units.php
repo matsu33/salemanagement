@@ -21,9 +21,18 @@ class Controller_Units extends Controller_Base
 	 * list all unit
 	 */
 	public function action_index()
-	{	
+	{
+        //init sql
+        $selectColumns = array(
+            "id",
+            "unit_name");
+        //excute
+        $querySelect = DB::select_array($selectColumns)->from($this->tableName);
+        $querySelect->order_by('unit_name','ASC');
+        $data['listData'] = $querySelect->execute()->as_array();
+
 		$this->template->title = Lang::get('title_unit');
-		$this->template->content = View::forge('units/index');
+		$this->template->content = View::forge('units/index', $data);
 	}
 	
 	/*****************************************************************************
@@ -48,7 +57,7 @@ class Controller_Units extends Controller_Base
 				"unit_name");
 			//excute
 			$querySelect = DB::select_array($selectColumns)->from($this->tableName);
-			$querySelect->order_by('update_at','DESC');
+			$querySelect->order_by('unit_name','ASC');
 			$data = $querySelect->execute()->as_array();
 		}catch (Exception $e){
 			$status = false;
