@@ -59,7 +59,8 @@ class Controller_Update extends Controller_Base
             //check method is post or get
             if (Input::method() == 'POST'){
                 //update code
-
+				$data = shell_exec("cd .. && git reset --hard && git checkout master && git pull");
+				
                 //udpate current version
                 $latestVersion = Input::param('latest_version');
                 Model_Config::updateLatestVersion($latestVersion);
