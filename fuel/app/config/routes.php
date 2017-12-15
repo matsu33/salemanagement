@@ -75,5 +75,6 @@ return array(
 		'tao_bang_bao_gia' => 'taobangbaogia/index',
 		'phieu_giao_hang' => 'phieugiaohang/index',
 		'don_dat_hang' => 'dondathang/index',
-		'banhang' => 'banhang/index'
+		'banhang' => 'banhang/index',
+        'cap_nhat' => 'update/index',
 );

@@ -250,3 +250,6 @@ body.modal-open, .modal-open .navbar-fixed-top, .modal-open .navbar-fixed-bottom
 .mr-10 {
 	margin-right: 10px;
 }
+.mb-10 {
+    margin-bottom: 10px;
+}

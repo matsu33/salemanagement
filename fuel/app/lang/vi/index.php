@@ -60,4 +60,5 @@ return array(
     'title_doanhthudaura' => 'Phước Thạnh - Doanh thu đầu ra',
 	'title_publisher_debt' => 'Phước Thạnh - Công nợ nhà cung cấp',
 	'title_customer_debt' => 'Phước Thạnh - Công nợ khách hàng sỉ',
+    'title_update' => 'Phước Thạnh - Cập nhật',
 );
