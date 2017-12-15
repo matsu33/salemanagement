@@ -81,7 +81,7 @@ var materials = null;
  ********************************************************************************/
 $(document).ready(function(){
 	// datatable = $('#dataTables-example').dataTable();
-	datatable = Omss.dataTable($("#table_material"), columns);
+//	datatable = Omss.dataTable($("#table_material"), columns);
 	
 	$('#frm_material_add').submit(function (evt) {
 		console.log("frm_material_add submit");
@@ -113,13 +113,15 @@ $(document).ready(function(){
 	});
 
 	//get list Material data
-	initListMaterial();
+//	initListMaterial();
 });
 
 /**
  * get list Material data
  */
 function initListMaterial(){
+    location.reload();
+    return false;
 	console.log('getAll');
 	Omss.post('materials/getAll').done(function(data) {
 		if (data) {

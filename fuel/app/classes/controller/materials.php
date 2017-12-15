@@ -21,9 +21,18 @@ class Controller_Materials extends Controller_Base
 	 * list all material
 	 */
 	public function action_index()
-	{	
+	{
+        //init sql
+        $selectColumns = array(
+            "id",
+            "material_name");
+        //excute
+        $querySelect = DB::select_array($selectColumns)->from($this->tableName);
+        $querySelect->order_by('material_name','ASC');
+        $data['listData'] = $querySelect->execute()->as_array();
+
 		$this->template->title = Lang::get('title_material');
-		$this->template->content = View::forge('materials/index');
+		$this->template->content = View::forge('materials/index', $data);
 	}
 	
 	/*****************************************************************************
@@ -47,7 +56,7 @@ class Controller_Materials extends Controller_Base
 				"material_name");
 			//excute
 			$querySelect = DB::select_array($selectColumns)->from($this->tableName);
-			$querySelect->order_by('update_at','DESC');
+			$querySelect->order_by('material_name','ASC');
 			$data = $querySelect->execute()->as_array();
 		}catch (Exception $e){
 			$status = false;

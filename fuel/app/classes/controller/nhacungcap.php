@@ -21,9 +21,18 @@ class Controller_Nhacungcap extends Controller_Base
 	 * list all publisher
 	 */
 	public function action_index()
-	{	
+	{
+        //init sql
+        $selectColumns = array(
+            "id",
+            "publisher_name");
+        //excute
+        $querySelect = DB::select_array($selectColumns)->from($this->tableName);
+        $querySelect->order_by('publisher_name','ASC');
+        $data['listData'] = $querySelect->execute()->as_array();
+
 		$this->template->title = Lang::get('title_publisher');
-		$this->template->content = View::forge('nhacungcap/index');
+		$this->template->content = View::forge('nhacungcap/index', $data);
 	}
 	
 	/*****************************************************************************
@@ -47,7 +56,7 @@ class Controller_Nhacungcap extends Controller_Base
 				"publisher_name");
 			//excute
 			$querySelect = DB::select_array($selectColumns)->from($this->tableName);
-			$querySelect->order_by('update_at','DESC');
+			$querySelect->order_by('publisher_name','ASC');
 			$data = $querySelect->execute()->as_array();
 		}catch (Exception $e){
 			$status = false;

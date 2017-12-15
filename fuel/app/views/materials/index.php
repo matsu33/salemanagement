@@ -45,7 +45,7 @@
 
 <div class="panel panel-default" id="panel_material_list">
 	<div class="panel-body">
-			<div class="row">
+			<!--<div class="row">
 					<div class="input-group col-md-6">
 						<input type="text" class="form-control global_filter" id="txtKeyword">
 						<span class="input-group-addon">
@@ -66,6 +66,25 @@
 								
 							</tbody>
 						</table>
-			</div>
+			</div>-->
+        <div class="row">
+            <?php if(count($listData) > 0 ){
+                for($i = 0; $i < count($listData); $i++){
+                    $publisher = $listData[$i];
+                    $publisherId = $publisher['id'];
+                    $publisherName = $publisher['material_name'];
+                    ?>
+                    <div class="col-md-3">
+                        <a class="btn btn-inverse btn-primary btn_edit_delete" onclick="showModalEdit('<?= $publisherId ?>','<?= $publisherName ?>')" href="#"><i class="fa fa-edit fa-lg"></i></a>
+                        <a class="btn btn-small btn-danger btn_edit_delete" onclick="showModalDelete('<?= $publisherId ?>','<?= $publisherName ?>')"><i class="fa fa-trash fa-lg"></i></a>
+                        <span><?= $publisherName ?></span>
+                    </div>
+                    <?php
+                }
+                ?>
+            <?php } else { ?>
+                Không tìm thấy nhà cung cấp nào
+            <?php } ?>
+        </div>
 	</div>
 </div>

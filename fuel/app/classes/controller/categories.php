@@ -21,9 +21,18 @@ class Controller_Categories extends Controller_Base
 	 * list all category
 	 */
 	public function action_index()
-	{	
+	{
+        //init sql
+        $selectColumns = array(
+            "id",
+            "category_name");
+        //excute
+        $querySelect = DB::select_array($selectColumns)->from($this->tableName);
+        $querySelect->order_by('category_name','ASC');
+        $data['listData'] = $querySelect->execute()->as_array();
+
 		$this->template->title = Lang::get('title_category');
-		$this->template->content = View::forge('categories/index');
+		$this->template->content = View::forge('categories/index', $data);
 	}
 	
 	/*****************************************************************************
@@ -47,7 +56,7 @@ class Controller_Categories extends Controller_Base
 				"category_name");
 			//excute
 			$querySelect = DB::select_array($selectColumns)->from($this->tableName);
-			$querySelect->order_by('update_at','DESC');
+			$querySelect->order_by('category_name','ASC');
 			$data = $querySelect->execute()->as_array();
 		}catch (Exception $e){
 			$status = false;
