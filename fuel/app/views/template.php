@@ -102,6 +102,8 @@
 								href="<?php echo Router::get('luu_du_lieu');?>">Lưu dữ liệu</a></li>
 							<li role="presentation"><a role="menuitem" tabindex="-1"
 								href="<?php echo Router::get('phuc_hoi_du_lieu');?>">Phục hồi dữ liệu</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1"
+                                                       href="<?php echo Router::get('cap_nhat');?>">Cập nhật</a></li>
 						</ul></li>
 					<li class="active"><a href="#" data-toggle="modal"
 						data-target="#logout_modal"> <span
