@@ -4,6 +4,7 @@ class Model_Material extends \Orm\Model
 {
 	protected static $_properties = array(
 		'id',
+		'parentid',
 		'material_name',
 		'status',
 		'create_at',
@@ -12,5 +13,5 @@ class Model_Material extends \Orm\Model
 
 
 	protected static $_table_name = 'materials';
-
+	protected static $_primary_key = array('id');
 }
