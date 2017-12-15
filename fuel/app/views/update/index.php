@@ -30,6 +30,10 @@
             <div class="col-md-3">
                 <button class="btn btn-primary col-md-12" onclick="callUpdateCodeFromGithub()">Cập nhật</button>
             </div>
-        <?php } ?>
+		<?php } else { ?>
+			<div class="col-md-3">
+				<button class="btn btn-primary col-md-12" onclick="callUpdateCodeFromGithub()">Refresh code</button>
+			</div>
+		<?php } ?>
     </div>
 </div>
