@@ -24,10 +24,13 @@ class Controller_Materials extends Controller_Base
 	{
         //init sql
         $selectColumns = array(
-            "id",
-            "material_name");
+            "m1.id",
+            "m1.parentid",
+            DB::expr('`m1`.`material_name` AS material_name1'),
+            DB::expr('`m2`.`material_name` AS parentname'),
+            DB::expr('CASE WHEN `m1`.`parentid` IS NOT NULL THEN CONCAT(`m2`.`material_name`, " - ", `m1`.`material_name`) ELSE `m1`.`material_name` END AS material_name'));
         //excute
-        $querySelect = DB::select_array($selectColumns)->from($this->tableName);
+        $querySelect = DB::select_array($selectColumns)->from(array($this->tableName, 'm1'))->join(array($this->tableName, 'm2'),'LEFT')->on("m2.id", "=", "m1.parentid");
         $querySelect->order_by('material_name','ASC');
         $data['listData'] = $querySelect->execute()->as_array();
 
