@@ -42,7 +42,7 @@ var columnsListPublisher = [{ "bSearchable": true}, 						//<th>Nhà cung cấp<
  ********************************************************************************/
 $(document).ready(function(){	
 	//init datatable
-	datatable = Omss.dataTable($(tableListPriceElement), columnsList);
+	// datatable = Omss.dataTable($(tableListPriceElement), columnsList);
 	datatablePublisher = Omss.dataTable($(tableListPublisher), columnsListPublisher);
 	
 	//fill category
@@ -52,23 +52,34 @@ $(document).ready(function(){
 	fillMaterialToSelectElement(".select_material");
 
 	//stop submit form
-	$(("#frm_so_sanh_gia, #frm_input_price_rate")).submit(function (evt) {
-		//stop submit
-		evt.preventDefault();
-	});
+	// $(("#frm_so_sanh_gia, #frm_input_price_rate")).submit(function (evt) {
+	// 	//stop submit
+	// 	evt.preventDefault();
+	// });
 
 	$('.input_diameter, .input_length, .input_product_range, .wholesales_rate, .retail_rate').autoNumeric('init',{aPad: false});
-	
+
+	$('#product_diameter, #product_length, #product_range, .input_current_instock, .input_unit_instock, .input_diameter, .input_length, .input_product_range').autoNumeric('init',{aPad: false});
+
 	/*************************
 	 * EVENT*****************
 	 ************************/
 	//click btn_search_price
-	$(".btn_search_price").click(clickSearchPriceButton);
+	// $(".btn_search_price").click(clickSearchPriceButton);
 	
 	//click button btn_confirm_input_price_rate
 	$("#btn_confirm_input_price_rate").click(clickConfirmInputPriceRate);
 	
 	$(".btn_print_list_price").click(clickButtonPrintListPrice);
+
+	$(".js-start-search").click(function() {
+		// initSearch();
+		startSearch();
+	});
+
+	$(".js-reset-search").click(function() {
+		window.location = '/sosanhgia';
+	});
 });
 
 function clickButtonPrintListPrice(){
@@ -292,4 +303,41 @@ function finishValidateInputPriceRate(){
 			Omss.showError(data.message);
 		}
 	});
+}
+
+function startSearch(){
+	var isCheckCategory = $('.js-checkbox-select-search-category').is( ":checked" );
+	var isCheckMaterial = $('.js-checkbox-select-search-material').is( ":checked" );
+
+	var searchCategoryQuery = '';
+	var searchMaterialQuery = '';
+	var searchDiameterQuery = '';
+	var searchLengthQuery = '';
+	var searchRangeQuery = '';
+	// var searchInstockQuery = '';
+
+	if(isCheckCategory){
+		searchCategoryQuery = '&category_id=' + parseInt($(".js-form-search-instock .select_category" ).val());
+	}
+
+	if(isCheckMaterial){
+		searchMaterialQuery = '&material_id=' + parseInt($(".js-form-search-instock .select_material" ).val());
+	}
+
+	if($(".js-form-search-instock .input_diameter" ).val() != ''){
+		searchDiameterQuery = '&product_diameter=' + parseInt($(".js-form-search-instock .input_diameter" ).autoNumeric('get'));
+	}
+	if($(".js-form-search-instock .input_length" ).val() != ''){
+		searchLengthQuery = '&product_length=' + parseInt($(".js-form-search-instock .input_length" ).autoNumeric('get'));
+	}
+	if($(".js-form-search-instock .input_product_range" ).val() != ''){
+		searchRangeQuery = '&product_range=' + parseInt($(".js-form-search-instock .input_product_range" ).autoNumeric('get'));
+	}
+	// if($(".js-form-search-instock .input_unit_instock" ).val() != ''){
+	// 	searchInstockQuery = '&unit_instock=' + parseInt($(".js-form-search-instock .input_unit_instock" ).autoNumeric('get'));
+	// }
+
+	window.location = '?page=1' + searchCategoryQuery + searchMaterialQuery + searchDiameterQuery + searchLengthQuery + searchRangeQuery;
+
+	return false;
 }
