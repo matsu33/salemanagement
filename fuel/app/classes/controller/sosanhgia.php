@@ -23,8 +23,117 @@ class Controller_Sosanhgia extends Controller_Base
 	 */
 	public function action_index()
 	{
+		//get parameters
+		$page = Input::param ( 'page' ) ? Input::param ( 'page' ) : 1;
+		$material_id = Input::param ( 'material_id' ) ? Input::param ( 'material_id' ) : '';
+		$category_id = Input::param ( 'category_id' ) ? Input::param ( 'category_id' ) : '';
+		$product_diameter = Input::param ( 'product_diameter' ) ? Input::param ( 'product_diameter' ) : '';
+		$product_length = Input::param ( 'product_length' ) ? Input::param ( 'product_length' ) : '';
+		$product_range = Input::param ( 'product_range' ) ? Input::param ( 'product_range' ) : '';
+		$unit_instock = Input::param ( 'unit_instock' ) ? Input::param ( 'unit_instock' ) : 0;
+
+		$materialSearchUrl = $material_id == '' ? '' : '&material_id='.$material_id;
+		$categorySearchUrl = $category_id == '' ? '' : '&category_id='.$category_id;
+		$productDiameterSearchUrl = $product_diameter == '' ? '' : '&product_diameter='.$product_diameter;
+		$productLengthSearchUrl = $product_length == '' ? '' : '&product_length='.$product_length;
+		$productRangeSearchUrl = $product_range == '' ? '' : '&product_range='.$product_range;
+//		$unitInstockSearchUrl = $unit_instock == '' ? '' : '&unit_instock='.$unit_instock;
+
+		// pagination config
+		$config = array (
+			// 'pagination_url' => '/manage/company',
+			'pagination_url' => '/sosanhgia/index?'.$materialSearchUrl.$categorySearchUrl.$productDiameterSearchUrl.$productLengthSearchUrl.$productRangeSearchUrl,
+			'total_items' => 0,
+			'per_page' => PRODUCT_PER_PAGE,
+			'uri_segment' => 'page',
+			'show_first' => true,
+			'show_last' => true
+		);
+
+		// Create a pagination instance named 'mypagination'
+		$pagination = Pagination::forge ( 'mypagination', $config );
+
+		////////////////
+		$querySelect = DB::select(
+			"product_id",
+			"category_id",
+			"category_name",
+			"material_id",
+			"material_name",
+			"diameter",
+			"length",
+			"product_range",
+			"unit_id",
+			"unit_name",
+			"image",
+			"wholesales_price",
+			"wholesales_price2",
+			"wholesales_price3",
+			"retail_price",
+// 											DB::expr("MAX(wholesales_price) AS wholesales_price"),
+// 											DB::expr("MAX(retail_price) AS retail_price"),
+			"selected_price"
+		)
+			->from($this->tableName)
+			->join('products','LEFT')
+			->on($this->tableName.'.product_id', '=', 'products.id')
+			->join('categories','LEFT')
+			->on('products.category_id', '=', 'categories.id')
+			->join('materials','LEFT')
+			->on('products.material_id', '=', 'materials.id')
+			->join('sizes','LEFT')
+			->on('products.size_id', '=', 'sizes.id')
+			->join('units','LEFT')
+			->on('products.unit_id', '=', 'units.id');
+		///
+//		$querySelect = DB::select ( "products.id", "unit_instock", "category_id", "category_name", "material_id", "material_name", "product_group", "size_id", "diameter", "length", "product_range", "unit_id", "unit_name", "image" )->from ( "products" )->join ( 'categories', 'LEFT' )->on ( 'products.category_id', '=', 'categories.id' )->join ( 'materials', 'LEFT' )->on ( 'products.material_id', '=', 'materials.id' )->join ( 'sizes', 'LEFT' )->on ( 'products.size_id', '=', 'sizes.id' )->join ( 'units', 'LEFT' )->on ( 'products.unit_id', '=', 'units.id' );
+
+		if($category_id != '') {
+			$querySelect->where('products.category_id', $category_id);
+		}
+		if($material_id != ''){
+			$querySelect->where ( 'products.material_id', $material_id );
+		}
+		if($product_diameter != ''){
+			$querySelect->where ( 'sizes.diameter', $product_diameter );
+		}
+		if($product_length != ''){
+			$querySelect->where ( 'sizes.length', $product_length );
+		}
+		if($product_range != ''){
+			$querySelect->where ( 'sizes.product_range', $product_range );
+		}
+		$querySelect->and_where_open()
+		->where ( 'wholesales_price', '>', 0 )
+		->or_where ( 'wholesales_price2', '>', 0 )
+			->or_where ( 'wholesales_price3', '>', 0 )
+			->or_where ( 'retail_price', '>', 0 )
+		->and_where_close();
+
+		$querySelect->where ( 'products.status', '1' );
+
+		$countTotalList = $querySelect->execute ()->as_array ();
+//		$query = DB::last_query();
+//		var_dump('<pre>');
+//		var_dump($query);
+//		var_dump('</pre>');
+//		exit;
+		$total_items = count($countTotalList);
+		$pagination->total_items = $total_items;
+		$paginationOffset = $page * PRODUCT_PER_PAGE - PRODUCT_PER_PAGE;
+		$data ['list_products'] = $querySelect->order_by ( 'products.create_at', 'desc' )->limit ( $pagination->per_page )->offset ( $paginationOffset )->execute ()->as_array ();
+
+		$data ['pagination'] = $pagination->render ();
+
+		$data ['material_id'] = $material_id;
+		$data ['category_id'] = $category_id;
+		$data ['product_diameter'] = $product_diameter;
+		$data ['product_length'] = $product_length;
+		$data ['product_range'] = $product_range;
+//		$data ['unit_instock'] = $unit_instock;
+
 		$this->template->title = Lang::get('title_compare_price');
-		$this->template->content = View::forge('sosanhgia/index');
+		$this->template->content = View::forge('sosanhgia/index', $data);
 	}
 
 	/*****************************************************************************
